@@ -109,3 +109,18 @@ public void orderPay(){
 
 
 ```
+
+redis easy
+
+```$java
+
+// 简易锁
+redisService.easyLock("key",seconds,() -> {// todo});
+
+// 简易等待锁
+redisService.easyWaitLock("key",seconds,() -> {// todo});
+
+// 简易幂等
+redisService.easyIdempotent("key",seconds,() -> {// todo});
+
+```
