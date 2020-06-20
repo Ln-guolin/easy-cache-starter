@@ -63,6 +63,11 @@ public class CaffeineServiceImpl implements CaffeineService {
     }
 
     @Override
+    public void setFixed(String key, Object obj) {
+        fixedCache.put(key,obj);
+    }
+
+    @Override
     public void delFixed(String key){
         fixedCache.invalidate(key);
     }
@@ -70,6 +75,11 @@ public class CaffeineServiceImpl implements CaffeineService {
     @Override
     public <R> R getFixed4Hours(String key, Supplier<R> supplier) {
         return getCaffeine(fixed4HourCache,key,supplier);
+    }
+
+    @Override
+    public void setFixed4Hours(String key, Object obj) {
+        fixed4HourCache.put(key,obj);
     }
 
     @Override
@@ -83,6 +93,11 @@ public class CaffeineServiceImpl implements CaffeineService {
     }
 
     @Override
+    public void setFixed4Days(String key, Object obj) {
+        fixed4DayCache.put(key,obj);
+    }
+
+    @Override
     public void delFixed4Days(String key) {
         fixed4DayCache.invalidate(key);
     }
@@ -93,6 +108,13 @@ public class CaffeineServiceImpl implements CaffeineService {
         Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
 
         return getCaffeine(caffeineCache,key,supplier);
+    }
+
+    @Override
+    public void set(String key, long expireSecond, Object obj) {
+        // 获取缓存
+        Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
+        caffeineCache.put(key,obj);
     }
 
     @Override

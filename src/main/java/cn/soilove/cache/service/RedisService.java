@@ -449,7 +449,7 @@ public interface RedisService {
     Object eval(String script,List<String> keys, List<String> args);
 
     /**
-     * 便捷缓存方法
+     * 简易-缓存
      * @param key
      * @param seconds
      * @param nullSeconds
@@ -457,4 +457,34 @@ public interface RedisService {
      * @return
      */
     String easyCache(String key, int seconds, int nullSeconds, Supplier<String> supplier);
+
+    /**
+     * 简易-锁
+     * @param key
+     * @param seconds
+     * @param supplier
+     * @param <T>
+     * @return
+     */
+    <T> T easyLock(String key, int seconds, Supplier<T> supplier);
+
+    /**
+     * 简易-等待锁
+     * @param key
+     * @param seconds
+     * @param supplier
+     * @param <T>
+     * @return
+     */
+    <T> T easyWaitLock(String key, int seconds, Supplier<T> supplier);
+
+    /**
+     * 简易-幂等控制
+     * @param key
+     * @param seconds
+     * @param supplier
+     * @param <T>
+     * @return
+     */
+    <T> T easyIdempotent(String key, int seconds, Supplier<T> supplier);
 }

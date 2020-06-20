@@ -404,4 +404,54 @@ public class JedisClusterServiceImpl implements RedisService {
             return res;
         });
     }
+
+    @Override
+    public <T> T easyLock(String key, int seconds, Supplier<T> supplier){
+        // 此任务正在执行，跳过
+        boolean lock = this.lock(key,seconds);
+        if(!lock){
+            throw new CacheStarterException("请求阻塞，请稍后再试！");
+        }
+        try{
+            return supplier.get();
+        }finally {
+            // 执行完成，移除key
+            this.unLock(key);
+        }
+    }
+
+    @Override
+    public <T> T easyWaitLock(String key, int seconds, Supplier<T> supplier){
+        // 此任务正在执行，跳过
+        boolean lock = this.lockWait(key,seconds);
+        if(!lock){
+            throw new CacheStarterException("请求阻塞，请稍后再试！");
+        }
+        try{
+            return supplier.get();
+        }finally {
+            // 执行完成，移除key
+            this.unLock(key);
+        }
+    }
+
+    @Override
+    public <T> T easyIdempotent(String key, int seconds, Supplier<T> supplier){
+        // 标记执行状态
+        key = String.format("idempotent:%s",key);
+
+        // 如果存在 <已执行> 标记，提示不能重复执行
+        String res = this.get(key);
+        if(StringUtils.isEmpty(res)){
+            throw new CacheStarterException("请勿重复操作！");
+        }
+
+        // 执行逻辑
+        T t = supplier.get();
+
+        // 设置 <已执行> 标记
+        this.set(key,"1",seconds);
+
+        return t;
+    }
 }

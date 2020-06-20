@@ -20,6 +20,13 @@ public interface CaffeineService {
     <R> R getFixed(String key,Supplier<R> supplier);
 
     /**
+     * 添加固定时间缓存 - 1分钟
+     * @param key
+     * @param obj
+     */
+    void setFixed(String key,Object obj);
+
+    /**
      * 删除固定时间缓存 - 1分钟
      * @param key
      */
@@ -35,13 +42,20 @@ public interface CaffeineService {
     <R> R getFixed4Hours(String key, Supplier<R> supplier);
 
     /**
+     * 添加固定时间缓存 - 1小时
+     * @param key
+     * @param obj
+     */
+    void setFixed4Hours(String key,Object obj);
+
+    /**
      * 删除固定时间缓存 - 1小时
      * @param key
      */
     void delFixed4Hours(String key);
 
     /**
-     * 固定时间缓存 - 1小时
+     * 固定时间缓存 - 1天
      * @param key
      * @param supplier
      * @param <R>
@@ -50,7 +64,14 @@ public interface CaffeineService {
     <R> R getFixed4Days(String key,Supplier<R> supplier);
 
     /**
-     * 删除固定时间缓存 - 1小时
+     * 添加固定时间缓存 - 1天
+     * @param key
+     * @param obj
+     */
+    void setFixed4Days(String key,Object obj);
+
+    /**
+     * 删除固定时间缓存 - 1天
      * @param key
      */
     void delFixed4Days(String key);
@@ -64,6 +85,14 @@ public interface CaffeineService {
      * @return
      */
     <R> R get(String key, long expireSecond, Supplier<R> supplier);
+
+    /**
+     * 添加动态时间缓存
+     * @param key
+     * @param expireSecond
+     * @param obj
+     */
+    void set(String key,long expireSecond,Object obj);
 
     /**
      * 获取缓存
