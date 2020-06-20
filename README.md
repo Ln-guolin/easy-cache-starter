@@ -9,7 +9,7 @@
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 </dependency>
 ```
 
