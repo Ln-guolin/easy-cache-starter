@@ -455,7 +455,7 @@ public class JedisSentinelServiceImpl implements RedisService {
 
         // 如果存在 <已执行> 标记，提示不能重复执行
         String res = this.get(key);
-        if(StringUtils.isEmpty(res)){
+        if(!StringUtils.isEmpty(res)){
             throw new CacheStarterException("请勿重复操作！");
         }
 
