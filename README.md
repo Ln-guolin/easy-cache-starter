@@ -9,7 +9,7 @@
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 
@@ -117,8 +117,8 @@ redis easy calc
 // 简易锁
 redisService.easyLock("key",seconds,() -> {// todo});
 
-// 简易等待锁
-redisService.easyWaitLock("key",seconds,() -> {// todo});
+// 简易自旋锁
+redisService.easySpinLock("key",seconds,() -> {// todo});
 
 // 简易幂等
 redisService.easyIdempotent("key",seconds,() -> {// todo});

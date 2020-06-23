@@ -408,12 +408,12 @@ public interface RedisService {
     boolean lock(String key, int seconds);
 
     /**
-     * 分布式等待锁
+     * 分布式自旋锁
      * @param key
      * @param seconds 持有锁超时秒数
      * @return
      */
-    boolean lockWait(String key, int seconds);
+    boolean lockSpin(String key, int seconds);
 
 
     /**
@@ -469,14 +469,14 @@ public interface RedisService {
     <T> T easyLock(String key, int seconds, Supplier<T> supplier);
 
     /**
-     * 简易-等待锁
+     * 简易-自旋锁
      * @param key
      * @param seconds
      * @param supplier
      * @param <T>
      * @return
      */
-    <T> T easyWaitLock(String key, int seconds, Supplier<T> supplier);
+    <T> T easySpinLock(String key, int seconds, Supplier<T> supplier);
 
     /**
      * 简易-幂等控制

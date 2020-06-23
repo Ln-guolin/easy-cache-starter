@@ -327,7 +327,7 @@ public class JedisClusterServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean lockWait(String key, int seconds) {
+    public boolean lockSpin(String key, int seconds) {
         try {
             key = LOCK_KEY_PREFIX + key;
             long startTime = System.currentTimeMillis();
@@ -349,7 +349,7 @@ public class JedisClusterServiceImpl implements RedisService {
                 throw new RuntimeException("spinLock error", e);
             }
 
-            return lockWait(key, seconds);
+            return lockSpin(key, seconds);
         } catch (Exception e) {
             log.error("redis 分布式等待锁-加锁异常，异常信息：", e);
             throw new CacheStarterException("命令执行异常！");
@@ -421,9 +421,9 @@ public class JedisClusterServiceImpl implements RedisService {
     }
 
     @Override
-    public <T> T easyWaitLock(String key, int seconds, Supplier<T> supplier){
+    public <T> T easySpinLock(String key, int seconds, Supplier<T> supplier){
         // 此任务正在执行，跳过
-        boolean lock = this.lockWait(key,seconds);
+        boolean lock = this.lockSpin(key,seconds);
         if(!lock){
             throw new CacheStarterException("请求阻塞，请稍后再试！");
         }
