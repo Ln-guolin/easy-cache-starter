@@ -452,10 +452,13 @@ public class JedisClusterServiceImpl implements RedisService {
         try{
             // 执行关键逻辑
             return supplier.get();
-        } catch (RuntimeException re){
+        } catch (RuntimeException e){
             this.del(key);
-            throw re;
+            throw e;
         } catch (Exception e){
+            this.del(key);
+            throw e;
+        } catch (Throwable e){
             this.del(key);
             throw e;
         }
