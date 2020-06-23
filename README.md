@@ -9,7 +9,7 @@
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
 </dependency>
 ```
 
@@ -110,7 +110,7 @@ public void orderPay(){
 
 ```
 
-redis easy
+redis easy calc
 
 ```$java
 
