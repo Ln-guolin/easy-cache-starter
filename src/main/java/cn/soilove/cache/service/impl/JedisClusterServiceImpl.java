@@ -446,12 +446,18 @@ public class JedisClusterServiceImpl implements RedisService {
             throw new CacheStarterException("请勿重复操作！");
         }
 
-        // 执行逻辑
-        T t = supplier.get();
-
         // 设置 <已执行> 标记
         this.set(key,"1",seconds);
 
-        return t;
+        try{
+            // 执行关键逻辑
+            return supplier.get();
+        } catch (RuntimeException re){
+            this.del(key);
+            throw re;
+        } catch (Exception e){
+            this.del(key);
+            throw e;
+        }
     }
 }
