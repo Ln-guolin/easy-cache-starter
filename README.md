@@ -1,6 +1,20 @@
 
 ## 缓存组件 - redis / caffeine
 
+```
+redis缓存：
+    1，提供单例，主从，集群三种部署模式的接入
+    2，提供redis基本操作命令接口
+    3，提供mq操作接口，实现了实时和延迟2种消息队列
+    4，提供easy快捷操作接口，实现了锁、自旋锁、幂等控制
+    5，提供geo位置计算接口
+    
+    
+caffeine本地缓存：
+    1，提供动态失效缓存接口
+    2，提供固定时间缓存接口
+
+```
 
 #### 使用方法
 **1.** pom文件添加依赖
@@ -9,7 +23,7 @@
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
 </dependency>
 ```
 
@@ -123,4 +137,26 @@ redisService.easySpinLock("key",seconds,() -> {// todo});
 // 简易幂等
 redisService.easyIdempotent("key",seconds,() -> {// todo});
 
+```
+
+redis geo 位置计算
+
+```angular2
+// 添加元素和位置
+redisService.geoadd(args ...)
+
+// 查询元素位置信息
+redisService.geopos(args ...)
+
+// 计算元素之间的距离
+redisService.geodist(args ...)
+
+// 查找附近的元素和距离
+redisService.georadius(args ...)
+
+// 查询元素geohash字符
+redisService.geohash(args ...)
+
+// 移除元素位置
+redisService.georem(args ...)
 ```

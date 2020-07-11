@@ -1,6 +1,10 @@
 package cn.soilove.cache.service;
 
+import redis.clients.jedis.GeoCoordinate;
+import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
 import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.GeoRadiusParam;
 
 import java.util.List;
 import java.util.Map;
@@ -447,6 +451,125 @@ public interface RedisService {
      * @return
      */
     Object eval(String script,List<String> keys, List<String> args);
+
+    /**
+     * 添加元素和经纬度
+     * @param key
+     * @param longitude
+     * @param latitude
+     * @param member
+     * @return
+     */
+    Long geoadd(String key, double longitude, double latitude, String member);
+
+    /**
+     * 添加元素和经纬度 - 批量
+     * @param key
+     * @param memberCoordinateMap
+     * @return
+     */
+    Long geoadd(String key, Map<String, GeoCoordinate> memberCoordinateMap);
+
+    /**
+     * 返回指定元素的经纬度信息
+     * @param key
+     * @param members
+     * @return
+     */
+    List<GeoCoordinate> geopos(String key, String ... members);
+
+    /**
+     * 返回2个元素之间的距离 - 单位：米
+     * @param key
+     * @param member1
+     * @param member2
+     * @return
+     */
+    Double geodist(String key, String member1, String member2);
+
+    /**
+     * 返回2个元素之间的距离
+     * @param key
+     * @param member1
+     * @param member2
+     * @param unit
+     * @return
+     */
+    Double geodist(String key, String member1, String member2, GeoUnit unit);
+
+    /**
+     * 返回指定经纬度指定距离内的元素
+     * @param key
+     * @param longitude
+     * @param latitude
+     * @param radius 距离
+     * @param unit 距离单位
+     * @return
+     */
+    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit);
+
+    /**
+     * 返回指定经纬度指定距离内的元素
+     * @param key
+     * @param longitude
+     * @param latitude
+     * @param radius 距离
+     * @param unit 距离单位
+     * @param param 指定参数
+     *              <pre>
+     *              withcoord:将与元素的距离也一起返回
+     *              withdist:将元素的经度和纬度也一起返回
+     *              asc:从近到远的排序返回
+     *              desc:从远到近的排序返回
+     *              count:指定返回元素的个数
+     *              </pre>
+     * @return
+     */
+    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit, GeoRadiusParam param);
+
+    /**
+     * 返回指定经纬度指定距离内的元素
+     * @param key
+     * @param member
+     * @param radius 距离
+     * @param unit 距离单位
+     * @return
+     */
+    List<GeoRadiusResponse> georadiusByMember(String key,String member, double radius, GeoUnit unit);
+
+    /**
+     * 返回指定经纬度指定距离内的元素
+     * @param key
+     * @param member
+     * @param radius 距离
+     * @param unit 距离单位
+     * @param param 指定参数
+     *              <pre>
+     *              withcoord:将与元素的距离也一起返回
+     *              withdist:将元素的经度和纬度也一起返回
+     *              asc:从近到远的排序返回
+     *              desc:从远到近的排序返回
+     *              count:指定返回元素的个数
+     *              </pre>
+     * @return
+     */
+    List<GeoRadiusResponse> georadiusByMember(String key, String member,  double radius, GeoUnit unit, GeoRadiusParam param);
+
+    /**
+     * 返回元素的geohash的位置，可以通过http://geohash.org/{value}直接定位
+     * @param key
+     * @param members
+     * @return
+     */
+    List<String> geohash(String key, String ... members);
+
+    /**
+     * 删除元素位置
+     * @param key
+     * @param members
+     * @return
+     */
+    Long georem(String key, String ... members);
 
     /**
      * 简易-缓存

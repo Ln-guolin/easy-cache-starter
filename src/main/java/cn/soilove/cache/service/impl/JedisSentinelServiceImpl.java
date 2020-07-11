@@ -6,10 +6,8 @@ import cn.soilove.cache.utils.SerializeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisSentinelPool;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.*;
+import redis.clients.jedis.params.GeoRadiusParam;
 import redis.clients.jedis.params.SetParams;
 
 import java.nio.charset.StandardCharsets;
@@ -389,6 +387,61 @@ public class JedisSentinelServiceImpl implements RedisService {
     @Override
     public Object eval(String script,List<String> keys, List<String> args){
         return doCommand(jedis -> jedis.eval(script,keys,args));
+    }
+
+    @Override
+    public Long geoadd(String key, double longitude, double latitude, String member){
+        return doCommand(jedis -> jedis.geoadd(key,longitude,latitude,member));
+    }
+
+    @Override
+    public Long geoadd(String key, Map<String, GeoCoordinate> memberCoordinateMap){
+        return doCommand(jedis -> jedis.geoadd(key,memberCoordinateMap));
+    }
+
+    @Override
+    public List<GeoCoordinate> geopos(String key, String ... members){
+        return doCommand(jedis -> jedis.geopos(key,members));
+    }
+
+    @Override
+    public Double geodist(String key, String member1, String member2){
+        return doCommand(jedis -> jedis.geodist(key,member1,member2));
+    }
+
+    @Override
+    public Double geodist(String key, String member1, String member2, GeoUnit unit){
+        return doCommand(jedis -> jedis.geodist(key,member1,member2,unit));
+    }
+
+    @Override
+    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit){
+        return doCommand(jedis -> jedis.georadius(key,longitude,latitude,radius,unit));
+    }
+
+    @Override
+    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit, GeoRadiusParam param){
+        return doCommand(jedis -> jedis.georadius(key,longitude,latitude,radius,unit));
+    }
+
+    @Override
+    public List<GeoRadiusResponse> georadiusByMember(String key,String member, double radius, GeoUnit unit){
+        return doCommand(jedis -> jedis.georadiusByMember(key,member,radius,unit));
+    }
+
+    @Override
+    public List<GeoRadiusResponse> georadiusByMember(String key, String member,  double radius, GeoUnit unit, GeoRadiusParam param){
+        return doCommand(jedis -> jedis.georadiusByMember(key,member,radius,unit));
+    }
+
+    @Override
+    public List<String> geohash(String key, String ... members){
+        return doCommand(jedis -> jedis.geohash(key,members));
+    }
+
+    @Override
+    public Long georem(String key, String ... members){
+        return doCommand(jedis -> key == null ? null : jedis.zrem(key,members));
     }
 
     @Override
