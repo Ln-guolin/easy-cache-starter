@@ -44,21 +44,6 @@ public interface RedisService {
     Long strlen(String key);
 
     /**
-     * 新增对象类型
-     * @param key
-     * @param obj
-     */
-    void setObj(String key, Object obj);
-
-    /**
-     * 新增对象类型 seconds 有效期（单位：s）--正数
-     * @param key
-     * @param obj
-     * @param seconds
-     */
-    void setObj(String key, Object obj, int seconds);
-
-    /**
      * 新增 value为String类型
      * @param key
      * @param value
@@ -109,15 +94,6 @@ public interface RedisService {
      * @return
      */
     ScanResult<String> scan(String regx);
-
-    /**
-     * 获取对象类型
-     * @param key
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    <T> T getObj(String key, Class<T> clazz);
 
     /**
      * 删除key的有效期
@@ -580,6 +556,18 @@ public interface RedisService {
      * @return
      */
     String easyCache(String key, int seconds, int nullSeconds, Supplier<String> supplier);
+
+    /**
+     * 简易-缓存对象
+     * @param key
+     * @param seconds
+     * @param nullSeconds
+     * @param classz
+     * @param supplier
+     * @param <R>
+     * @return
+     */
+    <R> R easyCache(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier);
 
     /**
      * 简易-锁

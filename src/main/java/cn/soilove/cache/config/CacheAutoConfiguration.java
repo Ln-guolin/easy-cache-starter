@@ -7,7 +7,7 @@ import cn.soilove.cache.service.impl.CaffeineServiceImpl;
 import cn.soilove.cache.service.impl.JedisClusterServiceImpl;
 import cn.soilove.cache.service.impl.JedisSentinelServiceImpl;
 import cn.soilove.cache.service.impl.JedisSingleServiceImpl;
-import cn.soilove.cache.utils.SerializeUtil;
+import cn.soilove.cache.utils.ExceptionStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -129,7 +129,7 @@ public class CacheAutoConfiguration {
                 log.info("redis建立连接成功，模式=" + redisProperties.getMode());
                 return jedis;
             } catch (Exception e) {
-                throw new CacheStarterException("[starter][cache]redis获取连接发生异常，msg="+ SerializeUtil.getStackTraceAsString(e));
+                throw new CacheStarterException("[starter][cache]redis获取连接发生异常，msg="+ ExceptionStringUtils.getStackTraceAsString(e));
             }
         }
 

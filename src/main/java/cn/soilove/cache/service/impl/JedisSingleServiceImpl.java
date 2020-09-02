@@ -2,7 +2,8 @@ package cn.soilove.cache.service.impl;
 
 import cn.soilove.cache.config.CacheStarterException;
 import cn.soilove.cache.service.RedisService;
-import cn.soilove.cache.utils.SerializeUtil;
+import cn.soilove.cache.utils.ExceptionStringUtils;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -10,7 +11,6 @@ import redis.clients.jedis.*;
 import redis.clients.jedis.params.GeoRadiusParam;
 import redis.clients.jedis.params.SetParams;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class JedisSingleServiceImpl implements RedisService {
             jedis = jedisPool.getResource();
             return function.apply(jedis);
         } catch (Exception e) {
-            throw new CacheStarterException("[错误]redis命令执行异常，msg="+SerializeUtil.getStackTraceAsString(e));
+            throw new CacheStarterException("[错误]redis命令执行异常，msg="+ ExceptionStringUtils.getStackTraceAsString(e));
         } finally {
             if (jedis != null){
                 jedis.close();
@@ -51,11 +51,6 @@ public class JedisSingleServiceImpl implements RedisService {
     @Override
     public Long strlen(String key) {
         return doCommand(jedis -> key == null ? null : jedis.strlen(key));
-    }
-
-    @Override
-    public void setObj(String key, Object obj) {
-        doCommand(jedis -> jedis.set(key.getBytes(StandardCharsets.UTF_8), SerializeUtil.serialize(obj)));
     }
 
     @Override
@@ -85,10 +80,6 @@ public class JedisSingleServiceImpl implements RedisService {
         });
     }
 
-    @Override
-    public void setObj(String key, Object obj, int seconds) {
-        doCommand(jedis -> jedis.setex(key.getBytes(StandardCharsets.UTF_8), seconds, SerializeUtil.serialize(obj)));
-    }
 
     @Override
     public String get(String key) {
@@ -120,12 +111,6 @@ public class JedisSingleServiceImpl implements RedisService {
             scanParams.count(Integer.MAX_VALUE);
             return jedis.scan(ScanParams.SCAN_POINTER_START, scanParams);
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getObj(String key, Class<T> clazz) {
-        return doCommand(jedis -> (T) SerializeUtil.unSerialize(jedis.get(key.getBytes(StandardCharsets.UTF_8))));
     }
 
     @Override
@@ -350,8 +335,8 @@ public class JedisSingleServiceImpl implements RedisService {
                         return true;
                     }
 
-                    // 轮训间隔50毫秒
-                    Thread.sleep(50);
+                    // 轮训间隔10毫秒
+                    Thread.sleep(10);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("spinLock error", e);
@@ -447,29 +432,44 @@ public class JedisSingleServiceImpl implements RedisService {
 
     @Override
     public String easyCache(String key, int seconds, int nullSeconds, Supplier<String> supplier){
-        // 先获取key是否存在
-        return doCommand(jedis -> {
-            // 优先读取缓存
-            String res = jedis.get(key);
-            if(!StringUtils.isEmpty(res)){
-                // 判断是否为空值
-                if(NULL_VALUE.equals(res)){
-                    return null;
-                }
-                return res;
-            }
-
-            // 执行查询
-            res = supplier.get();
-            // 空值处理
-            if(StringUtils.isEmpty(res)){
-                jedis.setex(key,nullSeconds,NULL_VALUE);
+        // 优先读取缓存
+        String res = get(key);
+        if(!StringUtils.isEmpty(res)){
+            // 判断是否为空值
+            if(NULL_VALUE.equals(res)){
                 return null;
             }
-            // 有值设置
-            jedis.setex(key,seconds,res);
             return res;
+        }
+
+        // 执行查询
+        res = supplier.get();
+        // 空值处理
+        if(StringUtils.isEmpty(res)){
+            set(key,NULL_VALUE,nullSeconds);
+            return null;
+        }
+        // 有值设置
+        set(key,res,seconds);
+        return res;
+    }
+
+    @Override
+    public <R> R easyCache(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier){
+
+        // 优先读取缓存
+        String res = easyCache(key,seconds,nullSeconds,() -> {
+            R r = supplier.get();
+            if(r != null){
+                return JSON.toJSONString(r);
+            }
+            return null;
         });
+
+        if(StringUtils.isEmpty(res)){
+            return null;
+        }
+        return JSON.parseObject(res, classz);
     }
 
     @Override
