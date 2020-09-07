@@ -63,7 +63,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Minutes(String key,Supplier<R> supplier){
+    public static <R> R getFixed4Minutes(String key,Supplier<R> supplier){
         return getR4Set(fixed4MinutesCache,key,supplier);
     }
 
@@ -73,7 +73,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Minutes(String key){
+    public static <R> R getFixed4Minutes(String key){
         return getR(key, fixed4MinutesCache);
     }
 
@@ -82,7 +82,7 @@ public class CaffeineCacheUtils {
      * @param key
      * @param obj
      */
-    public void setFixed4Minutes(String key, Object obj) {
+    public static void setFixed4Minutes(String key, Object obj) {
         fixed4MinutesCache.put(key,obj);
     }
 
@@ -90,7 +90,7 @@ public class CaffeineCacheUtils {
      * 删除缓存 - 1分钟
      * @param key
      */
-    public void delFixed4Minutes(String key){
+    public static void delFixed4Minutes(String key){
         fixed4MinutesCache.invalidate(key);
     }
 
@@ -102,7 +102,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Hours(String key, Supplier<R> supplier) {
+    public static <R> R getFixed4Hours(String key, Supplier<R> supplier) {
         return getR4Set(fixed4HourCache,key,supplier);
     }
 
@@ -112,7 +112,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Hours(String key) {
+    public static <R> R getFixed4Hours(String key) {
         return getR(key,fixed4HourCache);
     }
 
@@ -121,7 +121,7 @@ public class CaffeineCacheUtils {
      * @param key
      * @param obj
      */
-    public void setFixed4Hours(String key, Object obj) {
+    public static void setFixed4Hours(String key, Object obj) {
         fixed4HourCache.put(key,obj);
     }
 
@@ -129,7 +129,7 @@ public class CaffeineCacheUtils {
      * 删除缓存 - 1小时
      * @param key
      */
-    public void delFixed4Hours(String key) {
+    public static void delFixed4Hours(String key) {
         fixed4HourCache.invalidate(key);
     }
 
@@ -140,7 +140,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Days(String key, Supplier<R> supplier) {
+    public static <R> R getFixed4Days(String key, Supplier<R> supplier) {
         return getR4Set(fixed4DayCache,key,supplier);
     }
 
@@ -150,7 +150,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R getFixed4Days(String key) {
+    public static <R> R getFixed4Days(String key) {
         return getR(key,fixed4DayCache);
     }
 
@@ -159,7 +159,7 @@ public class CaffeineCacheUtils {
      * @param key
      * @param obj
      */
-    public void setFixed4Days(String key, Object obj) {
+    public static void setFixed4Days(String key, Object obj) {
         fixed4DayCache.put(key,obj);
     }
 
@@ -167,7 +167,7 @@ public class CaffeineCacheUtils {
      * 删除缓存 - 1天
      * @param key
      */
-    public void delFixed4Days(String key) {
+    public static void delFixed4Days(String key) {
         fixed4DayCache.invalidate(key);
     }
 
@@ -180,7 +180,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R get(String module,String key, long expireSecond, Supplier<R> supplier){
+    public static <R> R get(String module,String key, long expireSecond, Supplier<R> supplier){
         // 获取缓存
         Cache<Object, Object> caffeineCache = loadCaffeine(module,expireSecond);
 
@@ -194,7 +194,7 @@ public class CaffeineCacheUtils {
      * @param <R>
      * @return
      */
-    public <R> R get(String module,String key){
+    public static <R> R get(String module,String key){
         Cache<Object, Object> caffeineCache = cacheMap.get(module);
         return getR(key, caffeineCache);
     }
@@ -206,7 +206,7 @@ public class CaffeineCacheUtils {
      * @param expireSecond
      * @param obj
      */
-    public void set(String module,String key, long expireSecond, Object obj) {
+    public static void set(String module,String key, long expireSecond, Object obj) {
         // 获取缓存
         Cache<Object, Object> caffeineCache = loadCaffeine(module,expireSecond);
         caffeineCache.put(key,obj);
@@ -217,7 +217,7 @@ public class CaffeineCacheUtils {
      * @param module
      * @param key
      */
-    public void del(String module,String key){
+    public static void del(String module,String key){
         Cache<Object, Object> caffeineCache = cacheMap.get(module);
         if(caffeineCache != null){
             caffeineCache.invalidate(key);
@@ -228,7 +228,7 @@ public class CaffeineCacheUtils {
      * 删除缓存模块 - 动态缓存、模块
      * @param module
      */
-    public void del(String module){
+    public static void del(String module){
         cacheMap.remove(module);
     }
 
@@ -250,7 +250,7 @@ public class CaffeineCacheUtils {
         return caffeineCache;
     }
 
-    private  <R> R getR4Set(Cache<Object, Object> caffeineCache, String key, Supplier<R> supplier){
+    private static <R> R getR4Set(Cache<Object, Object> caffeineCache, String key, Supplier<R> supplier){
         // 读取缓存
         Object obj = caffeineCache.getIfPresent(key);
         if (obj != null) {
@@ -273,7 +273,7 @@ public class CaffeineCacheUtils {
         return result;
     }
 
-    private <R> R getR(String key, Cache<Object, Object> caffeineCache) {
+    private static <R> R getR(String key, Cache<Object, Object> caffeineCache) {
         if(caffeineCache != null){
             Object obj = caffeineCache.getIfPresent(key);
             if(obj == null){
@@ -286,7 +286,6 @@ public class CaffeineCacheUtils {
             return (R) obj;
         }
         return null;
-
     }
 
 }
