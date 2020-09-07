@@ -1,9 +1,7 @@
 package cn.soilove.cache.config;
 
 import cn.soilove.cache.properties.RedisProperties;
-import cn.soilove.cache.service.CaffeineService;
 import cn.soilove.cache.service.RedisService;
-import cn.soilove.cache.service.impl.CaffeineServiceImpl;
 import cn.soilove.cache.service.impl.JedisClusterServiceImpl;
 import cn.soilove.cache.service.impl.JedisSentinelServiceImpl;
 import cn.soilove.cache.service.impl.JedisSingleServiceImpl;
@@ -28,7 +26,7 @@ import java.util.Set;
  **/
 @Slf4j(topic = "[starter][cache]")
 @Configuration
-@ConditionalOnClass(value = {RedisService.class,CaffeineService.class})
+@ConditionalOnClass(value = {RedisService.class})
 @EnableConfigurationProperties(RedisProperties.class)
 public class CacheAutoConfiguration {
 
@@ -38,12 +36,6 @@ public class CacheAutoConfiguration {
 
     @Resource
     private RedisProperties redisProperties;
-
-    @Bean
-    @ConditionalOnMissingBean
-    public CaffeineService caffeineBean() {
-        return new CaffeineServiceImpl();
-    }
 
     @Bean
     @ConditionalOnMissingBean

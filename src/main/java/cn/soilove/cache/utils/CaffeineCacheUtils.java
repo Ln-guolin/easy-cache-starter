@@ -1,4 +1,4 @@
-package cn.soilove.cache.service.impl;
+package cn.soilove.cache.utils;
 
 import cn.soilove.cache.service.CaffeineService;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * @author: Chen GuoLin
  * @create: 2020-04-14 17:17
  **/
-public class CaffeineServiceImpl implements CaffeineService {
+public class CaffeineCacheUtils {
     /**
      * 空值
      */
@@ -57,52 +57,52 @@ public class CaffeineServiceImpl implements CaffeineService {
     private static final Map<String, Cache<Object, Object>> cacheMap = new ConcurrentHashMap<>();
 
 
-    @Override
+
     public <R> R getFixed(String key,Supplier<R> supplier){
         return getCaffeine(fixedCache,key,supplier);
     }
 
-    @Override
+
     public void setFixed(String key, Object obj) {
         fixedCache.put(key,obj);
     }
 
-    @Override
+
     public void delFixed(String key){
         fixedCache.invalidate(key);
     }
 
-    @Override
+
     public <R> R getFixed4Hours(String key, Supplier<R> supplier) {
         return getCaffeine(fixed4HourCache,key,supplier);
     }
 
-    @Override
+
     public void setFixed4Hours(String key, Object obj) {
         fixed4HourCache.put(key,obj);
     }
 
-    @Override
+
     public void delFixed4Hours(String key) {
         fixed4HourCache.invalidate(key);
     }
 
-    @Override
+
     public <R> R getFixed4Days(String key, Supplier<R> supplier) {
         return getCaffeine(fixed4DayCache,key,supplier);
     }
 
-    @Override
+
     public void setFixed4Days(String key, Object obj) {
         fixed4DayCache.put(key,obj);
     }
 
-    @Override
+
     public void delFixed4Days(String key) {
         fixed4DayCache.invalidate(key);
     }
 
-    @Override
+
     public <R> R get(String key, long expireSecond, Supplier<R> supplier){
         // 获取缓存
         Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
@@ -110,14 +110,14 @@ public class CaffeineServiceImpl implements CaffeineService {
         return getCaffeine(caffeineCache,key,supplier);
     }
 
-    @Override
+
     public void set(String key, long expireSecond, Object obj) {
         // 获取缓存
         Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
         caffeineCache.put(key,obj);
     }
 
-    @Override
+
     public <R> R get(String key){
         Cache<Object, Object> caffeineCache = cacheMap.get(key);
         if(caffeineCache != null){
@@ -134,7 +134,7 @@ public class CaffeineServiceImpl implements CaffeineService {
         return null;
     }
 
-    @Override
+
     public void del(String key){
         Cache<Object, Object> caffeineCache = cacheMap.get(key);
         if(caffeineCache != null){

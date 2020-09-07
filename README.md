@@ -23,7 +23,7 @@ caffeine本地缓存：
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 </dependency>
 ```
 
@@ -59,7 +59,7 @@ redis.maxWaitMillis=-1
 **3.** 调用示例
 
 
-redis
+redis 缓存
 
 ```java
 // 注入
@@ -73,15 +73,11 @@ redisService.set("key","1");
 
 ```
 
-caffeine
+caffeine 本地缓存
 
 ```java
-// 注入
-@Autowired
-private CaffeineService caffeineService;
-
 // 本地缓存
-String str = caffeineService.getFixed("key",() -> {return "query";});
+String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
 
 // 其他类似...
 
