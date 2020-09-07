@@ -1,6 +1,5 @@
 package cn.soilove.cache.utils;
 
-import cn.soilove.cache.service.CaffeineService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
