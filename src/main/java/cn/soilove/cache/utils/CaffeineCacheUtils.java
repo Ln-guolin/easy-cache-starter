@@ -29,7 +29,7 @@ public class CaffeineCacheUtils {
     /**
      * 固定时间缓存 - 1分钟
      */
-    private static final Cache<Object, Object> fixedCache = Caffeine.newBuilder()
+    private static final Cache<Object, Object> fixed4MinutesCache = Caffeine.newBuilder()
             .maximumSize(LOCAL_CAFFEINE_MAXIMUM_SIZE)
             .expireAfterWrite(1, TimeUnit.MINUTES)
             .build();
@@ -50,133 +50,214 @@ public class CaffeineCacheUtils {
 
     /**
      * 动态时间缓存map
-     * key=缓存key
+     * key=缓存module
      * value=Caffeine.newBuilder()
      */
     private static final Map<String, Cache<Object, Object>> cacheMap = new ConcurrentHashMap<>();
 
 
+    /**
+     * 获取缓存、无则设值 - 1分钟
+     * @param key
+     * @param supplier
+     * @param <R>
+     * @return
+     */
+    public <R> R getFixed4Minutes(String key,Supplier<R> supplier){
+        return getR4Set(fixed4MinutesCache,key,supplier);
+    }
 
-    public <R> R getFixed(String key,Supplier<R> supplier){
-        return getCaffeine(fixedCache,key,supplier);
+    /**
+     * 获取缓存 - 1分钟
+     * @param key
+     * @param <R>
+     * @return
+     */
+    public <R> R getFixed4Minutes(String key){
+        return getR(key, fixed4MinutesCache);
+    }
+
+    /**
+     * 缓存设值 - 1分钟
+     * @param key
+     * @param obj
+     */
+    public void setFixed4Minutes(String key, Object obj) {
+        fixed4MinutesCache.put(key,obj);
+    }
+
+    /**
+     * 删除缓存 - 1分钟
+     * @param key
+     */
+    public void delFixed4Minutes(String key){
+        fixed4MinutesCache.invalidate(key);
     }
 
 
-    public void setFixed(String key, Object obj) {
-        fixedCache.put(key,obj);
-    }
-
-
-    public void delFixed(String key){
-        fixedCache.invalidate(key);
-    }
-
-
+    /**
+     * 获取缓存、无则设值 - 1小时
+     * @param key
+     * @param supplier
+     * @param <R>
+     * @return
+     */
     public <R> R getFixed4Hours(String key, Supplier<R> supplier) {
-        return getCaffeine(fixed4HourCache,key,supplier);
+        return getR4Set(fixed4HourCache,key,supplier);
     }
 
+    /**
+     * 获取缓存 - 1小时
+     * @param key
+     * @param <R>
+     * @return
+     */
+    public <R> R getFixed4Hours(String key) {
+        return getR(key,fixed4HourCache);
+    }
 
+    /**
+     * 缓存设值 - 1小时
+     * @param key
+     * @param obj
+     */
     public void setFixed4Hours(String key, Object obj) {
         fixed4HourCache.put(key,obj);
     }
 
-
+    /**
+     * 删除缓存 - 1小时
+     * @param key
+     */
     public void delFixed4Hours(String key) {
         fixed4HourCache.invalidate(key);
     }
 
-
+    /**
+     * 获取缓存、无则设值 - 1天
+     * @param key
+     * @param supplier
+     * @param <R>
+     * @return
+     */
     public <R> R getFixed4Days(String key, Supplier<R> supplier) {
-        return getCaffeine(fixed4DayCache,key,supplier);
+        return getR4Set(fixed4DayCache,key,supplier);
     }
 
+    /**
+     * 获取缓存 - 1天
+     * @param key
+     * @param <R>
+     * @return
+     */
+    public <R> R getFixed4Days(String key) {
+        return getR(key,fixed4DayCache);
+    }
 
+    /**
+     * 缓存设值 - 1天
+     * @param key
+     * @param obj
+     */
     public void setFixed4Days(String key, Object obj) {
         fixed4DayCache.put(key,obj);
     }
 
-
+    /**
+     * 删除缓存 - 1天
+     * @param key
+     */
     public void delFixed4Days(String key) {
         fixed4DayCache.invalidate(key);
     }
 
-
-    public <R> R get(String key, long expireSecond, Supplier<R> supplier){
+    /**
+     * 获取缓存、无则设值 - 动态缓存、模块
+     * @param module
+     * @param key
+     * @param expireSecond
+     * @param supplier
+     * @param <R>
+     * @return
+     */
+    public <R> R get(String module,String key, long expireSecond, Supplier<R> supplier){
         // 获取缓存
-        Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
+        Cache<Object, Object> caffeineCache = loadCaffeine(module,expireSecond);
 
-        return getCaffeine(caffeineCache,key,supplier);
+        return getR4Set(caffeineCache,key,supplier);
     }
 
+    /**
+     * 获取缓存 - 动态缓存、模块
+     * @param module
+     * @param key
+     * @param <R>
+     * @return
+     */
+    public <R> R get(String module,String key){
+        Cache<Object, Object> caffeineCache = cacheMap.get(module);
+        return getR(key, caffeineCache);
+    }
 
-    public void set(String key, long expireSecond, Object obj) {
+    /**
+     * 缓存设值 - 动态缓存、模块
+     * @param module
+     * @param key
+     * @param expireSecond
+     * @param obj
+     */
+    public void set(String module,String key, long expireSecond, Object obj) {
         // 获取缓存
-        Cache<Object, Object> caffeineCache = loadCaffeine(key,expireSecond);
+        Cache<Object, Object> caffeineCache = loadCaffeine(module,expireSecond);
         caffeineCache.put(key,obj);
     }
 
-
-    public <R> R get(String key){
-        Cache<Object, Object> caffeineCache = cacheMap.get(key);
-        if(caffeineCache != null){
-            Object obj = caffeineCache.getIfPresent(key);
-            if(obj == null){
-                return null;
-            }
-            // 空缓存判断
-            if(Objects.equals(obj,NULL_VALUE)){
-                return null;
-            }
-            return (R) obj;
-        }
-        return null;
-    }
-
-
-    public void del(String key){
-        Cache<Object, Object> caffeineCache = cacheMap.get(key);
+    /**
+     * 删除缓存 - 动态缓存、模块
+     * @param module
+     * @param key
+     */
+    public void del(String module,String key){
+        Cache<Object, Object> caffeineCache = cacheMap.get(module);
         if(caffeineCache != null){
             caffeineCache.invalidate(key);
         }
     }
 
     /**
-     * 获取缓存
-     * @param key
+     * 删除缓存模块 - 动态缓存、模块
+     * @param module
+     */
+    public void del(String module){
+        cacheMap.remove(module);
+    }
+
+    /**
+     * 加载Caffeine对象
+     * @param module
      * @param expireSecond
      * @return
      */
-    private static Cache<Object, Object> loadCaffeine(String key, long expireSecond){
-        Cache<Object, Object> caffeineCache = cacheMap.get(key);
+    private static Cache<Object, Object> loadCaffeine(String module, long expireSecond){
+        Cache<Object, Object> caffeineCache = cacheMap.get(module);
         if(caffeineCache == null){
             caffeineCache = Caffeine.newBuilder()
                     .maximumSize(LOCAL_CAFFEINE_MAXIMUM_SIZE)
                     .expireAfterWrite(expireSecond, TimeUnit.SECONDS)
                     .build();
-            cacheMap.put(key,caffeineCache);
+            cacheMap.put(module,caffeineCache);
         }
         return caffeineCache;
     }
 
-    /**
-     * 获取缓存
-     * @param caffeineCache
-     * @param key
-     * @param supplier
-     * @param <R>
-     * @return
-     */
-    private  <R> R getCaffeine(Cache<Object, Object> caffeineCache, String key, Supplier<R> supplier){
+    private  <R> R getR4Set(Cache<Object, Object> caffeineCache, String key, Supplier<R> supplier){
         // 读取缓存
         Object obj = caffeineCache.getIfPresent(key);
         if (obj != null) {
-
             // 空缓存判断
             if(Objects.equals(obj,NULL_VALUE)){
                 return null;
             }
-
             return (R) obj;
         }
 
@@ -190,6 +271,22 @@ public class CaffeineCacheUtils {
             caffeineCache.put(key, NULL_VALUE);
         }
         return result;
+    }
+
+    private <R> R getR(String key, Cache<Object, Object> caffeineCache) {
+        if(caffeineCache != null){
+            Object obj = caffeineCache.getIfPresent(key);
+            if(obj == null){
+                return null;
+            }
+            // 空缓存判断
+            if(Objects.equals(obj,NULL_VALUE)){
+                return null;
+            }
+            return (R) obj;
+        }
+        return null;
+
     }
 
 }
