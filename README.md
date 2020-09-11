@@ -1,33 +1,111 @@
+<p align="center">
+	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache"><img src="https://soilove.oss-cn-hangzhou.aliyuncs.com/32e/pro-mall/easy-cache-starter.png" width="350px"></a>
+</p>
+<p align="center">
+	<strong>一个整合了Redis缓存和Caffeine本地缓存的SpringBoot Starter</strong>
+</p>
+<p align="center">
+	<a target="_blank" href="https://github.com/Ln-guolin/spring-boot-starter-cache/blob/master/LICENSE">
+		<img src="https://img.shields.io/:license-Apache2.0-blue.svg" />
+	</a>
+	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
+		<img src="https://img.shields.io/badge/JDK-8+-green.svg" />
+	</a>
+	<a target="_blank" href="https://gitter.im/pro-32e/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+		<img src="https://badges.gitter.im/pro-32e/community.svg" />
+	</a>
+	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
+        <img src="https://img.shields.io/github/languages/code-size/Ln-guolin/spring-boot-starter-cache"/>
+    </a>
+	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
+        <img src="https://img.shields.io/github/issues-raw/Ln-guolin/spring-boot-starter-cache"/>
+    </a>
+    <a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
+        <img src="https://img.shields.io/github/v/tag/Ln-guolin/spring-boot-starter-cache"/>
+    </a>
+	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
+        <img src="https://img.shields.io/github/stars/Ln-guolin/spring-boot-starter-cache?style=social"/>
+    </a>
+</p>
 
-## 缓存组件 - redis / caffeine
 
+
+
+## 项目介绍
+
+本项目整合了Redis缓存和Caffeine本地缓存，并实现了以及基于两者的常用接口和功能，将其封装成为SpringBoot Starter，以便项目快速使用。
+
+##### Redis实现内容：
+- 支持单例，主从，集群三种模式部署的Redis快速接入
+- 提供redis基本操作命令
+- 提供mq操作接口，实现了实时和延迟2种消息队列
+- 提供easy快捷操作功能，实现了"快速缓存"、"锁"、"自旋锁"、"幂等控制"接口
+- 提供geo位置计算
+
+##### Caffeine实现内容：
+- 提供动态失效缓存接口
+- 提供固定时间缓存接口
+
+
+## 项目结构
+```lua
+src
+└── main
+    ├── java
+    │   └── cn
+    │       └── soilove
+    │           └── cache
+    │               ├── config
+    │               │   ├── CacheAutoConfiguration.java // 自动配置类
+    │               │   └── CacheStarterException.java // 自定义异常
+    │               ├── properties
+    │               │   └── RedisProperties.java // redis自动配置属性类
+    │               ├── service
+    │               │   ├── RedisService.java // redis接口
+    │               │   ├── handler
+    │               │   │   └── RedisMQHandler.java // mq实现工具
+    │               │   └── impl
+    │               │       ├── JedisClusterServiceImpl.java // redis主从模式实现
+    │               │       ├── JedisSentinelServiceImpl.java // redis集群模式实现
+    │               │       └── JedisSingleServiceImpl.java // redis单例模式实现
+    │               └── utils
+    │                   ├── CaffeineCacheUtils.java // 本地缓存工具
+    │                   ├── ExceptionStringUtils.java
+    │                   └── RedisKeysEnum.java
+    └── resources
+        └── META-INF
+            └── spring.factories
 ```
-redis缓存：
-    1，提供单例，主从，集群三种部署模式的接入
-    2，提供redis基本操作命令接口
-    3，提供mq操作接口，实现了实时和延迟2种消息队列
-    4，提供easy快捷操作接口，实现了锁、自旋锁、幂等控制
-    5，提供geo位置计算接口
-    
-    
-caffeine本地缓存：
-    1，提供动态失效缓存接口
-    2，提供固定时间缓存接口
 
-```
+## 使用方法
 
-#### 使用方法
-**1.** pom文件添加依赖
+### 引入组件
+Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可使用
 ```xml
-<!-- 私有缓存组件 -->
+<!-- 缓存组件 -->
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.2.0</version>
+    <version>${last.version}</version>
 </dependency>
 ```
 
-**2.** 在配置文件添加配置
+
+### Caffeine本地缓存使用
+
+直接使用静态工具类调用指定方法即可
+
+```java
+// 本地缓存
+String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
+
+// 其他类似...
+
+```
+
+### Redis缓存使用
+
+##### 1，首先进行配置添加
 ```yaml
 ## 缓存数据库redis连接配置
 # 模式：single-单点，cluster-集群，sentinel-主从
@@ -56,10 +134,9 @@ redis.minIdle=0
 redis.maxWaitMillis=-1
 ```
 
-**3.** 调用示例
+##### 2，直接在代码中注入调用
 
-
-redis 缓存
+- redis 基本缓存
 
 ```java
 // 注入
@@ -73,17 +150,9 @@ redisService.set("key","1");
 
 ```
 
-caffeine 本地缓存
 
-```java
-// 本地缓存
-String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
 
-// 其他类似...
-
-```
-
-redis mq
+- redis mq
 
 ```java
 // 注入
@@ -97,7 +166,7 @@ redisMQHandler.lpush("topic-name","处理内容字符串");
 // 消费
 @Scheduled(cron = "*/1 * * * * ?")
 public void orderPay(){
-    redisMQHandler.rpop("order-pay",(content) -> {
+    redisMQHandler.rpop("topic-name",(content) -> {
         log.info("【#######[mq]#######】正在处理消息：" + content);
         return null;
     });
@@ -110,17 +179,58 @@ redisMQHandler.lpush4delay("topic-name","处理内容字符串",60);
 // 消费 - 延时队列
 @Scheduled(cron = "*/1 * * * * ?")
 public void orderPay(){
-    redisMQHandler.rpop4delay("order-pay",(content) -> {
+    redisMQHandler.rpop4delay("topic-name",(content) -> {
         log.info("【#######[mq]#######】正在处理消息：" + content);
         return null;
     });
 }
-
-
-
 ```
 
-redis easy calc
+
+- redis 简易缓存
+
+```$java
+
+/* 接口 */
+
+/**
+ * 简易-缓存
+ * @param key 缓存key
+ * @param seconds 缓存时间-秒
+ * @param nullSeconds 空值缓存时间-秒
+ * @param supplier Supplier接口
+ * @return
+ */
+String easyCache(String key, int seconds, int nullSeconds, Supplier<String> supplier);
+
+/**
+ * 简易-缓存对象
+ * @param key 缓存key
+ * @param seconds 缓存时间-秒
+ * @param nullSeconds 空值缓存时间-秒
+ * @param classz 对象Class
+ * @param supplier Supplier接口
+ * @param <R>
+ * @return
+ */
+<R> R easyCache(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier);
+
+/* 调用 */
+
+// 简易-缓存字符
+String str = redisService.easyCache("key",60,5,() -> {
+            // do query db
+            return "";
+        });
+
+// 简易-缓存对象
+UserInfo info = redisService.easyCache("key",60,5,UserInfo.class,() -> {
+            // do query db
+            return null;
+        });
+```
+
+- redis 简易锁
 
 ```$java
 
@@ -135,7 +245,7 @@ redisService.easyIdempotent("key",seconds,() -> {// todo});
 
 ```
 
-redis geo 位置计算
+- redis geo 位置计算
 
 ```angular2
 // 添加元素和位置
@@ -156,3 +266,8 @@ redisService.geohash(args ...)
 // 移除元素位置
 redisService.georem(args ...)
 ```
+
+
+
+
+
