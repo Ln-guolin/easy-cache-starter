@@ -15,6 +15,9 @@
 		<img src="https://badges.gitter.im/pro-32e/community.svg" />
 	</a>
 	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
+        <img src="https://img.shields.io/github/repo-size/Ln-guolin/spring-boot-starter-cache"/>
+    </a>
+	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
         <img src="https://img.shields.io/github/issues-raw/Ln-guolin/spring-boot-starter-cache"/>
     </a>
     <a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
