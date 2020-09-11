@@ -21,7 +21,7 @@
         <img src="https://img.shields.io/github/issues-raw/Ln-guolin/spring-boot-starter-cache"/>
     </a>
     <a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
-        <img src="https://img.shields.io/github/v/tag/Ln-guolin/spring-boot-starter-cache"/>
+        <img src="https://img.shields.io/github/v/release/Ln-guolin/spring-boot-starter-cache?include_prereleases"/>
     </a>
 	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
         <img src="https://img.shields.io/github/stars/Ln-guolin/spring-boot-starter-cache?style=social"/>
