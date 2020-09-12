@@ -65,8 +65,8 @@ src
     │               │   ├── handler
     │               │   │   └── RedisMQHandler.java // mq实现工具
     │               │   └── impl
-    │               │       ├── JedisClusterServiceImpl.java // redis主从模式实现
-    │               │       ├── JedisSentinelServiceImpl.java // redis集群模式实现
+    │               │       ├── JedisClusterServiceImpl.java // redis集群模式实现
+    │               │       ├── JedisSentinelServiceImpl.java // redis主从模式实现
     │               │       └── JedisSingleServiceImpl.java // redis单例模式实现
     │               └── utils
     │                   ├── CaffeineCacheUtils.java // 本地缓存工具
