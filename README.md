@@ -29,11 +29,19 @@
 </p>
 
 
+<p align="center">
+    在此鸣谢Jetbrains
+	<a target="_blank" href="https://www.jetbrains.com/?from=spring-boot-starter-cache">
+		<img src="https://soilove.oss-cn-hangzhou.aliyuncs.com/32e/jetbrains/jetbrains.svg" height="30"/>
+	</a>
+	为本项目提供免费正版工具支持!
+</p>
 
 
 ## 项目介绍
 
 本项目整合了Redis缓存和Caffeine本地缓存，并实现了以及基于两者的常用接口和功能，将其封装成为SpringBoot Starter，以便项目快速使用。
+
 
 ##### Redis实现内容：
 - 支持单例，主从，集群三种模式部署的Redis快速接入
