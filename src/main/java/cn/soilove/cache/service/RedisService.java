@@ -218,7 +218,16 @@ public interface RedisService {
     Long zadd(String key,double score,String member);
 
     /**
-     * 查询有序集合
+     * 有序集合元素score值加上增量incr
+     * @param key
+     * @param incr
+     * @param member
+     * @return
+     */
+    Double zincrby(String key,double incr,String member);
+
+    /**
+     * 查询有序集合 - 从小到大排序
      * @param key
      * @param start 开始下标，从0开始
      * @param stop 结束下标，从0开始
@@ -227,7 +236,7 @@ public interface RedisService {
     Set<String> zrange(String key, Long start, Long stop);
 
     /**
-     * 查询有序集合
+     * 查询有序集合 - 从小到大排序
      * @param key
      * @param min
      * @param max
@@ -236,12 +245,55 @@ public interface RedisService {
     Set<String> zrangeByScore(String key, double min, double max);
 
     /**
+     * 查询有序集合 - 从大到小排序
+     * @param key
+     * @param start 开始下标，从0开始
+     * @param stop 结束下标，从0开始
+     * @return
+     */
+    Set<String> zrevrange(String key, Long start, Long stop);
+
+    /**
+     * 查询有序集合 - 从大到小排序
+     * @param key
+     * @param min
+     * @param max
+     * @return
+     */
+    Set<String> zrevrangeByScore(String key, double min, double max);
+
+    /**
      * 删除有序集合元素
      * @param key
      * @param members
      * @return
      */
     Long zrem(String key, String ... members);
+
+    /**
+     * 查询有序集合成员数量
+     * @param key
+     * @param min
+     * @param max
+     * @return
+     */
+    Long zcount(String key,  double min, double max);
+
+    /**
+     * 返回member的排名(下标)
+     * @param key
+     * @param member
+     * @return
+     */
+    Long zrank(String key,  String member);
+
+    /**
+     * 查询member是否存在
+     * @param key
+     * @param member
+     * @return
+     */
+    Boolean zexists(String key,  String member);
 
     /**
      * 添加集合元素

@@ -194,6 +194,11 @@ public class JedisSingleServiceImpl implements RedisService {
     }
 
     @Override
+    public Double zincrby(String key,double incr,String member){
+        return doCommand(jedis -> key == null ? null : jedis.zincrby(key,incr,member));
+    }
+
+    @Override
     public Set<String> zrange(String key, Long start, Long stop){
         return doCommand(jedis -> key == null ? null : jedis.zrange(key,start,stop));
     }
@@ -204,8 +209,33 @@ public class JedisSingleServiceImpl implements RedisService {
     }
 
     @Override
+    public Set<String> zrevrange(String key, Long start, Long stop){
+        return doCommand(jedis -> key == null ? null : jedis.zrevrange(key,start,stop));
+    }
+
+    @Override
+    public Set<String> zrevrangeByScore(String key, double min, double max){
+        return doCommand(jedis -> key == null ? null : jedis.zrevrangeByScore(key,min,max));
+    }
+
+    @Override
     public Long zrem(String key, String ... members){
         return doCommand(jedis -> key == null ? null : jedis.zrem(key,members));
+    }
+
+    @Override
+    public Long zcount(String key,  double min, double max){
+        return doCommand(jedis -> key == null ? null : jedis.zcount(key,min,max));
+    }
+
+    @Override
+    public Long zrank(String key,  String member){
+        return doCommand(jedis -> key == null ? null : jedis.zrank(key,member));
+    }
+
+    @Override
+    public Boolean zexists(String key,  String member){
+        return zrank(key,member) != null;
     }
 
     @Override
