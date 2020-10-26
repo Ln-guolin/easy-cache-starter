@@ -53,36 +53,46 @@
 ##### Caffeine实现内容：
 - 提供动态失效缓存接口
 - 提供固定时间缓存接口
-
+- 提供注解实现方式，并支持spel表达式
 
 ## 项目结构
 ```lua
-src
-└── main
-    ├── java
-    │   └── cn
-    │       └── soilove
-    │           └── cache
-    │               ├── config
-    │               │   ├── CacheAutoConfiguration.java // 自动配置类
-    │               │   └── CacheStarterException.java // 自定义异常
-    │               ├── properties
-    │               │   └── RedisProperties.java // redis自动配置属性类
-    │               ├── service
-    │               │   ├── RedisService.java // redis接口
-    │               │   ├── handler
-    │               │   │   └── RedisMQHandler.java // mq实现工具
-    │               │   └── impl
-    │               │       ├── JedisClusterServiceImpl.java // redis集群模式实现
-    │               │       ├── JedisSentinelServiceImpl.java // redis主从模式实现
-    │               │       └── JedisSingleServiceImpl.java // redis单例模式实现
-    │               └── utils
-    │                   ├── CaffeineCacheUtils.java // 本地缓存工具
-    │                   ├── ExceptionStringUtils.java
-    │                   └── RedisKeysEnum.java
-    └── resources
-        └── META-INF
-            └── spring.factories
+├── LICENSE
+├── README.md
+├── pom.xml
+├── spring-boot-starter-cache.iml
+└── src
+    └── main
+        ├── java
+        │   └── cn
+        │       └── soilove
+        │           └── cache
+        │               ├── annotations
+        │               │   ├── EasyLocalCache.java
+        │               │   └── EasyLocalCacheClean.java
+        │               ├── aspect
+        │               │   └── LocalCacheAspect.java
+        │               ├── config
+        │               │   ├── CacheAutoConfiguration.java
+        │               │   └── CacheStarterException.java
+        │               ├── properties
+        │               │   └── RedisProperties.java
+        │               ├── service
+        │               │   ├── RedisService.java
+        │               │   ├── handler
+        │               │   │   └── RedisMQHandler.java
+        │               │   └── impl
+        │               │       ├── JedisClusterServiceImpl.java
+        │               │       ├── JedisSentinelServiceImpl.java
+        │               │       └── JedisSingleServiceImpl.java
+        │               └── utils
+        │                   ├── CaffeineCacheUtils.java
+        │                   ├── ExceptionStringUtils.java
+        │                   └── RedisKeysEnum.java
+        └── resources
+            └── META-INF
+                └── spring.factories
+
 ```
 
 ## 使用方法
@@ -101,7 +111,7 @@ Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可�
 
 ### Caffeine本地缓存使用
 
-直接使用静态工具类调用指定方法即可
+##### 使用静态工具类
 
 ```java
 // 本地缓存
@@ -109,6 +119,28 @@ String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
 
 // 其他类似...
 
+```
+
+##### 使用注解
+操作示例：
+```java
+// 获取数据并缓存
+@EasyLocalCache(namespace = "area", key = "'info:' + #code", timeout = 60 * 60 * 24)
+
+// 清空缓存空间
+@EasyLocalCacheClean(namespace = "user")
+
+// 清空指定缓存
+@EasyLocalCacheClean(namespace = "area", key = "'info:' + #code")
+```
+
+表达式示例：
+```
+* 缓存key - spel表达式
+* 示例：
+*  key="#id"
+*  key="#user.id"
+*  key="'name:' + #user.name"
 ```
 
 ### Redis缓存使用
