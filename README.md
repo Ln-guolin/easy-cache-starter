@@ -40,7 +40,7 @@
 
 ## 项目介绍
 
-本项目整合了Redis缓存和Caffeine本地缓存，并实现了以及基于两者的常用接口和功能，将其封装成为SpringBoot Starter，以便项目快速使用。
+本项目整合了Redis缓存和Caffeine本地缓存，并实现了以及基于两者的常用接口、注解和功能，将其封装成为SpringBoot Starter，以便项目快速使用。
 
 
 ##### Redis实现内容：
@@ -49,6 +49,7 @@
 - 提供mq操作接口，实现了实时和延迟2种消息队列
 - 提供easy快捷操作功能，实现了"快速缓存"、"锁"、"自旋锁"、"幂等控制"接口
 - 提供geo位置计算
+- 提供注解实现方式，并支持spel表达式
 
 ##### Caffeine实现内容：
 - 提供动态失效缓存接口
@@ -68,10 +69,15 @@
         │       └── soilove
         │           └── cache
         │               ├── annotations
+        │               │   ├── EasyIdempotent.java
         │               │   ├── EasyLocalCache.java
-        │               │   └── EasyLocalCacheClean.java
+        │               │   ├── EasyLocalCacheClean.java
+        │               │   └── EasyLock.java
         │               ├── aspect
-        │               │   └── LocalCacheAspect.java
+        │               │   ├── SpELAspectHandler.java
+        │               │   ├── IdempotentAspect.java
+        │               │   ├── LocalCacheAspect.java
+        │               │   └── LockAspect.java
         │               ├── config
         │               │   ├── CacheAutoConfiguration.java
         │               │   └── CacheStarterException.java
@@ -92,7 +98,6 @@
         └── resources
             └── META-INF
                 └── spring.factories
-
 ```
 
 ## 使用方法
@@ -276,12 +281,23 @@ UserInfo info = redisService.easyCache("key",60,5,UserInfo.class,() -> {
 
 // 简易锁
 redisService.easyLock("key",seconds,() -> {// todo});
+或
+// 注解方式
+@EasyLock(key = "'info:' + #code", timeout = 60, spin = false)
+
 
 // 简易自旋锁
 redisService.easySpinLock("key",seconds,() -> {// todo});
+或
+// 注解方式
+@EasyLock(key = "'info:' + #code", timeout = 60, spin = true)
+
 
 // 简易幂等
 redisService.easyIdempotent("key",seconds,() -> {// todo});
+或
+// 注解方式
+@EasyIdempotent(key = "'info:' + #code", timeout = 60)
 
 ```
 
