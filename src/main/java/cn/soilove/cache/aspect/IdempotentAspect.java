@@ -43,7 +43,7 @@ public class IdempotentAspect extends SpELAspectHandler {
         String key = parseSpel(method, args,annotation.key(),String.class,null);
 
         // 幂等控制
-        return redisService.easyIdempotent(key,(int)annotation.timeout(), () -> {
+        return redisService.easyIdempotent(key,annotation.timeout(), () -> {
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {

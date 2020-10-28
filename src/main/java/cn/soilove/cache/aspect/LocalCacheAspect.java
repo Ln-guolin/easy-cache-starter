@@ -26,13 +26,13 @@ import java.lang.reflect.Method;
 public class LocalCacheAspect extends SpELAspectHandler {
 
     /**
-     * 获取并设置本地缓存
+     * 获取并设置缓存
      * @param joinPoint
      * @param annotation
      * @return
      */
     @Around("@annotation(cn.soilove.cache.annotations.EasyLocalCache) && @annotation(annotation)")
-    public Object easyLocalCache(ProceedingJoinPoint joinPoint, EasyLocalCache annotation) {
+    public Object easyCache(ProceedingJoinPoint joinPoint, EasyLocalCache annotation) {
 
         Method method = filterMethod(joinPoint);
         Object[] args = joinPoint.getArgs();
@@ -51,14 +51,14 @@ public class LocalCacheAspect extends SpELAspectHandler {
     }
 
     /**
-     * 清空本地缓存
+     * 清空缓存
      * @param joinPoint
      * @param annotation
      * @return
      * @throws Throwable
      */
     @Around("@annotation(cn.soilove.cache.annotations.EasyLocalCacheClean) && @annotation(annotation)")
-    public Object easyLocalCacheClean(ProceedingJoinPoint joinPoint, EasyLocalCacheClean annotation) throws Throwable {
+    public Object easyCacheClean(ProceedingJoinPoint joinPoint, EasyLocalCacheClean annotation) throws Throwable {
 
         Method method = filterMethod(joinPoint);
         Object[] args = joinPoint.getArgs();

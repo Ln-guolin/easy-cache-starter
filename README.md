@@ -56,8 +56,20 @@
 - 提供固定时间缓存接口
 - 提供注解实现方式，并支持spel表达式
 
-## 项目结构
+##### 支持注解
+
+| 注解                   | 类型    | 备注             |
+| ---------------------- | ------- | ---------------- |
+| @EasyIdempotent       | method   | 幂等控制     |
+| @EasyLock             | method   | 分布式锁：自旋与非自旋     |
+| @EasyLocalCache       | method   | caffeine本地缓存获取和设置，支持spel表达式     |
+| @EasyLocalCacheClean  | method   | caffeine本地缓存清理     |
+| @EasyRedisCache       | method   | redis缓存获取和设置，支持spel表达式     |
+| @EasyRedisCacheClean  | method   | redis缓存清理     |
+
+##  项目结构
 ```lua
+spring-boot-starter-cache
 ├── LICENSE
 ├── README.md
 ├── pom.xml
@@ -72,12 +84,15 @@
         │               │   ├── EasyIdempotent.java
         │               │   ├── EasyLocalCache.java
         │               │   ├── EasyLocalCacheClean.java
-        │               │   └── EasyLock.java
+        │               │   ├── EasyLock.java
+        │               │   ├── EasyRedisCache.java
+        │               │   └── EasyRedisCacheClean.java
         │               ├── aspect
-        │               │   ├── SpELAspectHandler.java
         │               │   ├── IdempotentAspect.java
         │               │   ├── LocalCacheAspect.java
-        │               │   └── LockAspect.java
+        │               │   ├── LockAspect.java
+        │               │   ├── RedisCacheAspect.java
+        │               │   └── SpELAspectHandler.java
         │               ├── config
         │               │   ├── CacheAutoConfiguration.java
         │               │   └── CacheStarterException.java
@@ -92,12 +107,14 @@
         │               │       ├── JedisSentinelServiceImpl.java
         │               │       └── JedisSingleServiceImpl.java
         │               └── utils
+        │                   ├── CacheStarterCode.java
         │                   ├── CaffeineCacheUtils.java
         │                   ├── ExceptionStringUtils.java
         │                   └── RedisKeysEnum.java
         └── resources
             └── META-INF
                 └── spring.factories
+
 ```
 
 ## 使用方法
@@ -112,7 +129,6 @@ Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可�
     <version>${last.version}</version>
 </dependency>
 ```
-
 
 ### Caffeine本地缓存使用
 
@@ -150,7 +166,7 @@ String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
 
 ### Redis缓存使用
 
-##### 1，首先进行配置添加
+##### 配置添加
 ```yaml
 ## 缓存数据库redis连接配置
 # 模式：single-单点，cluster-集群，sentinel-主从
@@ -179,7 +195,7 @@ redis.minIdle=0
 redis.maxWaitMillis=-1
 ```
 
-##### 2，直接在代码中注入调用
+##### 使用注入bean方式
 
 - redis 基本缓存
 
@@ -281,23 +297,12 @@ UserInfo info = redisService.easyCache("key",60,5,UserInfo.class,() -> {
 
 // 简易锁
 redisService.easyLock("key",seconds,() -> {// todo});
-或
-// 注解方式
-@EasyLock(key = "'info:' + #code", timeout = 60, spin = false)
-
 
 // 简易自旋锁
 redisService.easySpinLock("key",seconds,() -> {// todo});
-或
-// 注解方式
-@EasyLock(key = "'info:' + #code", timeout = 60, spin = true)
-
 
 // 简易幂等
 redisService.easyIdempotent("key",seconds,() -> {// todo});
-或
-// 注解方式
-@EasyIdempotent(key = "'info:' + #code", timeout = 60)
 
 ```
 
@@ -321,6 +326,25 @@ redisService.geohash(args ...)
 
 // 移除元素位置
 redisService.georem(args ...)
+```
+
+##### 使用注解
+操作示例：
+```java
+// 幂等控制
+@EasyIdempotent(key = "'pay:' + #order.code",timeout = 60)
+
+// 加锁，可使用spin控制是否自旋
+@EasyLock(key = "'pay:' + #order.code",timeout = 60,spin = true)
+
+// 对象类型数据缓存
+@EasyRedisCache(key = "'user:' + #user.id",classz = SysUser.class,timeout = 60,timeout4none = 5)
+
+// 集合类型数据缓存
+@EasyRedisCache(key = "'books:' + #type",classz = Book.class,array = true,timeout = 60,timeout4none = 5)
+
+// 清空缓存
+@EasyRedisCacheClean(key = "'user:' + #user.id")
 ```
 
 

@@ -485,20 +485,16 @@ public class JedisClusterServiceImpl implements RedisService {
 
     @Override
     public <R> R easyCache(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier){
-
-        // 优先读取缓存
-        String res = easyCache(key,seconds,nullSeconds,() -> {
-            R r = supplier.get();
-            if(r != null){
-                return JSON.toJSONString(r);
-            }
-            return null;
-        });
-
-        if(StringUtils.isEmpty(res)){
-            return null;
-        }
+        String res = queryEasyCacheJsonStr(key, seconds, nullSeconds, supplier);
+        if (StringUtils.isEmpty(res)) return null;
         return JSON.parseObject(res, classz);
+    }
+
+    @Override
+    public <R> List<R> easyCache4Array(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier){
+        String res = queryEasyCacheJsonStr(key, seconds, nullSeconds, supplier);
+        if (StringUtils.isEmpty(res)) return null;
+        return JSON.parseArray(res, classz);
     }
 
     @Override
@@ -506,6 +502,7 @@ public class JedisClusterServiceImpl implements RedisService {
         // 此任务正在执行，跳过
         boolean lock = this.lock(key,seconds);
         if(!lock){
+            log.error("[starter][cache][easyLock]加锁错误!key:" + key);
             throw new CacheStarterException(CacheStarterCode.LOCK_ERROR);
         }
         try{
@@ -521,6 +518,7 @@ public class JedisClusterServiceImpl implements RedisService {
         // 此任务正在执行，跳过
         boolean lock = this.lockSpin(key,seconds);
         if(!lock){
+            log.error("[starter][cache][easySpinLock]加锁错误!key:" + key);
             throw new CacheStarterException(CacheStarterCode.LOCK_ERROR);
         }
         try{
@@ -539,6 +537,7 @@ public class JedisClusterServiceImpl implements RedisService {
         // 通过lua脚本实现，原子自增1，并设置过期时间
         Long res = this.incrEX(key,seconds);
         if(res > 1){
+            log.error("[starter][cache][easyIdempotent]幂等错误!key:" + key);
             throw new CacheStarterException(CacheStarterCode.IDEMPOTENT_ERROR);
         }
         try{
@@ -554,5 +553,16 @@ public class JedisClusterServiceImpl implements RedisService {
             this.del(key);
             throw e;
         }
+    }
+
+    private <R> String queryEasyCacheJsonStr(String key, int seconds, int nullSeconds, Supplier<R> supplier) {
+        // 优先读取缓存
+        return easyCache(key, seconds, nullSeconds,() -> {
+            R r = supplier.get();
+            if(r != null){
+                return JSON.toJSONString(r);
+            }
+            return null;
+        });
     }
 }

@@ -3,14 +3,15 @@ package cn.soilove.cache.annotations;
 import java.lang.annotation.*;
 
 /**
- * redis幂等控制注解
+ * redis缓存清空注解
  * @author: Chen GuoLin
  * @create: 2020-10-26 19:32
  **/
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EasyIdempotent {
+public @interface EasyRedisCacheClean {
+
     /**
      * 缓存key - spel表达式
      * <pre>
@@ -22,10 +23,4 @@ public @interface EasyIdempotent {
      * @return
      */
     String key();
-
-    /**
-     * 超时时间 - 单位:秒
-     * @return
-     */
-    int timeout() default 60;
 }

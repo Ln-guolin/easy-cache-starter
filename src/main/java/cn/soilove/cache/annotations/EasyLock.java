@@ -27,7 +27,7 @@ public @interface EasyLock {
      * 超时时间 - 单位:秒
      * @return
      */
-    long timeout() default 60;
+    int timeout() default 60;
 
     /**
      * 是否自旋 - 默认非自旋

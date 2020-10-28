@@ -630,6 +630,18 @@ public interface RedisService {
     <R> R easyCache(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier);
 
     /**
+     * 简易-缓存集合
+     * @param key
+     * @param seconds
+     * @param nullSeconds
+     * @param classz
+     * @param supplier
+     * @param <R>
+     * @return
+     */
+    <R> List<R> easyCache4Array(String key, int seconds,int nullSeconds,Class<R> classz, Supplier<R> supplier);
+
+    /**
      * 简易-锁
      * @param key
      * @param seconds
