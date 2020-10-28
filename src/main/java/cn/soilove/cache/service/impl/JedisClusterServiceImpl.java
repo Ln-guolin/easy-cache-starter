@@ -2,6 +2,7 @@ package cn.soilove.cache.service.impl;
 
 import cn.soilove.cache.config.CacheStarterException;
 import cn.soilove.cache.service.RedisService;
+import cn.soilove.cache.utils.CacheStarterCode;
 import cn.soilove.cache.utils.ExceptionStringUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import redis.clients.jedis.*;
 import redis.clients.jedis.params.GeoRadiusParam;
 import redis.clients.jedis.params.SetParams;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,6 +133,15 @@ public class JedisClusterServiceImpl implements RedisService {
     @Override
     public Long incrBy(String key,long increment) {
         return doCommand(jedis -> key == null ? null : jedis.incrBy(key,increment));
+    }
+
+    @Override
+    public Long incrEX(String key, long seconds){
+        String script = "local res = redis.call('incr',KEYS[1]); " +
+                        "redis.call('expire',KEYS[1],ARGV[1]); " +
+                        "return res;";
+        Object result = this.eval(script, Collections.singletonList(key), Collections.singletonList(String.valueOf(seconds)));
+        return Long.valueOf(result.toString());
     }
 
     @Override
@@ -495,7 +506,7 @@ public class JedisClusterServiceImpl implements RedisService {
         // 此任务正在执行，跳过
         boolean lock = this.lock(key,seconds);
         if(!lock){
-            throw new CacheStarterException("请求阻塞，请稍后再试！");
+            throw new CacheStarterException(CacheStarterCode.LOCK_ERROR);
         }
         try{
             return supplier.get();
@@ -510,7 +521,7 @@ public class JedisClusterServiceImpl implements RedisService {
         // 此任务正在执行，跳过
         boolean lock = this.lockSpin(key,seconds);
         if(!lock){
-            throw new CacheStarterException("请求阻塞，请稍后再试！");
+            throw new CacheStarterException(CacheStarterCode.LOCK_ERROR);
         }
         try{
             return supplier.get();
@@ -523,17 +534,13 @@ public class JedisClusterServiceImpl implements RedisService {
     @Override
     public <T> T easyIdempotent(String key, int seconds, Supplier<T> supplier){
         // 标记执行状态
-        key = String.format("idempotent:%s",key);
+        key = String.format("idpt:%s",key);
 
-        // 如果存在 <已执行> 标记，提示不能重复执行
-        String res = this.get(key);
-        if(!StringUtils.isEmpty(res)){
-            throw new CacheStarterException("请勿重复操作！");
+        // 通过lua脚本实现，原子自增1，并设置过期时间
+        Long res = this.incrEX(key,seconds);
+        if(res > 1){
+            throw new CacheStarterException(CacheStarterCode.IDEMPOTENT_ERROR);
         }
-
-        // 设置 <已执行> 标记
-        this.set(key,"1",seconds);
-
         try{
             // 执行关键逻辑
             return supplier.get();

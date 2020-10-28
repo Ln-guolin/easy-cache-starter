@@ -124,6 +124,14 @@ public interface RedisService {
     Long incr(String key);
 
     /**
+     * key值自增1 - lua脚本实现，指定过期时间
+     * @param key
+     * @param seconds
+     * @return
+     */
+    Long incrEX(String key, long seconds);
+
+    /**
      * key值自增指定数值
      * @param key
      * @param increment
