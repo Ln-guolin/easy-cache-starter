@@ -27,14 +27,8 @@ public class LockAspect extends SpELAspectHandler {
     @Autowired
     private RedisService redisService;
 
-    /**
-     * 获取并设置本地缓存
-     * @param joinPoint
-     * @param annotation
-     * @return
-     */
     @Around("@annotation(cn.soilove.cache.annotations.EasyLock) && @annotation(annotation)")
-    public Object easyLocalCache(ProceedingJoinPoint joinPoint, EasyLock annotation){
+    public Object easyLock(ProceedingJoinPoint joinPoint, EasyLock annotation){
 
         Method method = filterMethod(joinPoint);
         Object[] args = joinPoint.getArgs();
