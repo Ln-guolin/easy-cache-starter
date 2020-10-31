@@ -405,6 +405,27 @@ public class JedisClusterServiceImpl implements RedisService {
     }
 
     @Override
+    public Boolean setbit(String key, long offset, boolean value){
+        return doCommand(jedis -> key == null ? null : jedis.setbit(key,offset,value));
+    }
+
+    @Override
+    public Boolean setbit(String key, long offset, String value) {
+        return doCommand(jedis -> key == null ? null : jedis.setbit(key,offset,value));
+    }
+
+    @Override
+    public Boolean getbit(String key, long offset) {
+        return doCommand(jedis -> key == null ? null : jedis.getbit(key,offset));
+    }
+
+    @Override
+    public Pipeline getPipeline() {
+        log.error("[starter][cache][getPipeline]集群模式不支持Pipeline");
+        throw new CacheStarterException(CacheStarterCode.ERROR.getCode(),"集群模式不支持Pipeline");
+    }
+
+    @Override
     public Long geoadd(String key, double longitude, double latitude, String member){
         return doCommand(jedis -> jedis.geoadd(key,longitude,latitude,member));
     }

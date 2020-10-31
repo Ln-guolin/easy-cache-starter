@@ -1,9 +1,6 @@
 package cn.soilove.cache.service;
 
-import redis.clients.jedis.GeoCoordinate;
-import redis.clients.jedis.GeoRadiusResponse;
-import redis.clients.jedis.GeoUnit;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.*;
 import redis.clients.jedis.params.GeoRadiusParam;
 
 import java.util.List;
@@ -487,6 +484,38 @@ public interface RedisService {
      * @return
      */
     Object eval(String script,List<String> keys, List<String> args);
+
+    /**
+     * 设置或清除指定偏移量上的位(bit)
+     * @param key
+     * @param offset
+     * @param value
+     * @return
+     */
+    Boolean setbit(String key, long offset, boolean value);
+
+    /**
+     * 设置或清除指定偏移量上的位(bit)
+     * @param key
+     * @param offset
+     * @param value
+     * @return
+     */
+    Boolean setbit(String key, long offset, String value);
+
+    /**
+     * 获取指定偏移量上的位(bit)
+     * @param key
+     * @param offset
+     * @return
+     */
+    Boolean getbit(String key, long offset);
+
+    /**
+     * 管道
+     * @return
+     */
+    Pipeline getPipeline();
 
     /**
      * 添加元素和经纬度
