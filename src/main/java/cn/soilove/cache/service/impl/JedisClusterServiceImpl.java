@@ -421,8 +421,8 @@ public class JedisClusterServiceImpl implements RedisService {
 
     @Override
     public Pipeline getPipeline() {
-        log.error("[starter][cache][getPipeline]集群模式不支持Pipeline");
-        throw new CacheStarterException(CacheStarterCode.ERROR.getCode(),"集群模式不支持Pipeline");
+        log.error("[starter][cache][getPipeline]Cluster模式不支持Pipeline");
+        throw new CacheStarterException(CacheStarterCode.ERROR.getCode(),"Cluster模式不支持Pipeline");
     }
 
     @Override
