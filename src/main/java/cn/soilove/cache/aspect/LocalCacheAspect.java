@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * @author: Chen GuoLin
  * @create: 2020-10-26 17:14
  **/
-@Order(-1)
+@Order(-2)
 @Slf4j
 @Aspect
 @Component
