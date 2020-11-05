@@ -358,20 +358,28 @@ redisService.georem(args ...)
 ```java
 // 创建过滤器
 BloomFilterUtils.create("test",1000,0.00001);
+
 // 设置元素
 BloomFilterUtils.put("test","zhangsan");
+
 // 验证是否存在
 boolean exists = BloomFilterUtils.mightContain("test","zhangsan");       
 ```
 
 ##### redis过滤器
 ```java
+// 注入过滤器
+@Autowired
+private RedisBloomFilter redisBloomFilter;
+
 // 创建过滤器
+redisBloomFilter.create(1000,0.0001);
 
 // 设置元素
+redisBloomFilter.put("test","zhangsan");
 
 // 验证是否存在
-
+boolean exists = redisBloomFilter.mightContain("test","zhangsan");
 ```
 
 
