@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <name>spring-boot-starter-cache</name>
-    <description>Redis and caffeineCache Spring Boot starter</description>
+    <description>Redis and Caffeine cache Spring Boot starter</description>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>

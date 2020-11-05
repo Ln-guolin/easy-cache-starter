@@ -23,7 +23,19 @@ public enum RedisKeysEnum {
      * redis mq delay key
      * [0] = biz
      */
-    REDIS_MQ_DELAY_TOPIC("mq:topic:delay:%s");
+    REDIS_MQ_DELAY_TOPIC("mq:topic:delay:%s"),
+
+    /**
+     * bloomFilter namespace
+     * [0] = namespace name
+     */
+    REDIS_BF_NAMESPACE("bf:namespace:%s"),
+
+    /**
+     * bloomFilter config
+     * [0] = namespace name
+     */
+    REDIS_BF_CONFIG("bf:config:%s"),
 
     ;
 
