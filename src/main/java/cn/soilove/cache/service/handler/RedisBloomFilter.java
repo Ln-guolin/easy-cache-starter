@@ -52,8 +52,6 @@ public class RedisBloomFilter {
         // 配置类
         RedisBloomFilterConfig config = new RedisBloomFilterConfig();
 
-        // Funnel 设置
-        config.setFunnel(Funnels.stringFunnel(Charsets.UTF_8));
         // bit size 计算
         config.setBitSize(optimalNumOfBits(expectedInsertions, fpp));
         checkArgument(config.getBitSize() > 0, "data length is zero!");
@@ -143,7 +141,7 @@ public class RedisBloomFilter {
             config = getConfig(key);
         }
 
-        long hash64 = Hashing.murmur3_128().hashObject(value, config.getFunnel()).asLong();
+        long hash64 = Hashing.murmur3_128().hashObject(value, Funnels.stringFunnel(Charsets.UTF_8)).asLong();
         int hash1 = (int) hash64;
         int hash2 = (int) (hash64 >>> 32);
 
