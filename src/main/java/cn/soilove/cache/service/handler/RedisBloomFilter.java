@@ -83,10 +83,14 @@ public class RedisBloomFilter {
         key = RedisKeysEnum.REDIS_BF_NAMESPACE.parseKey(key);
 
         Pipeline pipeline = redisService.getPipeline();
-        for (long i : offset) {
-            pipeline.setbit(key, i, true);
+        try {
+            for (long i : offset) {
+                pipeline.setbit(key, i, true);
+            }
+            pipeline.syncAndReturnAll();
+        } finally {
+            pipeline.close();
         }
-        pipeline.syncAndReturnAll();
     }
 
     /**
@@ -102,10 +106,14 @@ public class RedisBloomFilter {
         key = RedisKeysEnum.REDIS_BF_NAMESPACE.parseKey(key);
 
         Pipeline pipeline = redisService.getPipeline();
-        for (long index : offset) {
-            pipeline.getbit(key, index);
+        try {
+            for (long index : offset) {
+                pipeline.getbit(key, index);
+            }
+            return !pipeline.syncAndReturnAll().contains(false);
+        } finally {
+            pipeline.close();
         }
-        return !pipeline.syncAndReturnAll().contains(false);
     }
 
     /**
