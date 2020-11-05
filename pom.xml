@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.soilove</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
     <name>spring-boot-starter-cache</name>
     <description>Redis and Caffeine cache Spring Boot starter</description>
 

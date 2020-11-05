@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import redis.clients.jedis.Pipeline;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,15 +80,8 @@ public class RedisBloomFilter {
 
         // 命名空间key
         key = RedisKeysEnum.REDIS_BF_NAMESPACE.parseKey(key);
-
-        Pipeline pipeline = redisService.getPipeline();
-        try {
-            for (long i : offset) {
-                pipeline.setbit(key, i, true);
-            }
-            pipeline.syncAndReturnAll();
-        } finally {
-            pipeline.close();
+        for (long i : offset) {
+            redisService.setbit(key, i, true);
         }
     }
 
@@ -105,15 +97,13 @@ public class RedisBloomFilter {
         // 命名空间key
         key = RedisKeysEnum.REDIS_BF_NAMESPACE.parseKey(key);
 
-        Pipeline pipeline = redisService.getPipeline();
-        try {
-            for (long index : offset) {
-                pipeline.getbit(key, index);
+        for (long index : offset) {
+            boolean res = redisService.getbit(key, index);
+            if(!res){
+                return false;
             }
-            return !pipeline.syncAndReturnAll().contains(false);
-        } finally {
-            pipeline.close();
         }
+        return true;
     }
 
     /**
