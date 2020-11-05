@@ -84,6 +84,7 @@ public class BloomFilterUtils {
     public static void put(String namespace, List<String> items){
         BloomFilter<CharSequence> bloomFilter = getCharSequenceBloomFilter(namespace);
         for (String item : items){
+            check(bloomFilter,namespace);
             bloomFilter.put(item);
         }
     }
