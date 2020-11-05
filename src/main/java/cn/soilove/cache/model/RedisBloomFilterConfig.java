@@ -10,8 +10,8 @@ import lombok.Data;
  **/
 @Data
 public class RedisBloomFilterConfig {
-    private long bitSize;
-    private int numHashFunctions;
+    private Long bitSize;
+    private Integer numHashFunctions;
 }
 
 
