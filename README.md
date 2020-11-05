@@ -352,7 +352,27 @@ redisService.georem(args ...)
 @EasyRedisCacheClean(key = "'user:' + #user.id")
 ```
 
+### 布隆过滤器的使用
 
+##### 本地过滤器
+```java
+// 创建过滤器
+BloomFilterUtils.create("test",1000,0.00001);
+// 设置元素
+BloomFilterUtils.put("test","zhangsan");
+// 验证是否存在
+boolean exists = BloomFilterUtils.mightContain("test","zhangsan");       
+```
+
+##### redis过滤器
+```java
+// 创建过滤器
+
+// 设置元素
+
+// 验证是否存在
+
+```
 
 
 
