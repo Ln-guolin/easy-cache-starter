@@ -374,7 +374,7 @@ boolean exists = BloomFilterUtils.mightContain("test","zhangsan");
 private RedisBloomFilter redisBloomFilter;
 
 // 创建过滤器
-redisBloomFilter.create(1000,0.0001);
+redisBloomFilter.create("test",1000,0.0001);
 
 // 设置元素
 redisBloomFilter.put("test","zhangsan");
