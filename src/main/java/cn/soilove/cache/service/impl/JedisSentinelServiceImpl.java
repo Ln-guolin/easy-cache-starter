@@ -364,28 +364,21 @@ public class JedisSentinelServiceImpl implements RedisService {
             jedis = jedisSentinelPool.getResource();
             key = LOCK_KEY_PREFIX + key;
             long startTime = System.currentTimeMillis();
-
             long waitInMilliSeconds = ((long) seconds) * 1000;
-
-            try {
-                // 不断轮询锁，直到超时
-                while (System.currentTimeMillis() - startTime < waitInMilliSeconds) {
-                    // 判断锁是否能加锁，成功设置表示加锁成功，利用set nx效果，如果存在相同值则返回失败的特性
-                    boolean res = setnx(key,"1",seconds);
-                    if(res){
-                        return true;
-                    }
-                    // 轮训间隔10毫秒
-                    Thread.sleep(10);
+            // 不断轮询锁，直到超时
+            while (System.currentTimeMillis() - startTime < waitInMilliSeconds) {
+                // 判断锁是否能加锁，成功设置表示加锁成功，利用set nx效果，如果存在相同值则返回失败的特性
+                boolean res = setnx(key,"1",seconds);
+                if(res){
+                    return true;
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("spinLock error", e);
+                // 轮训间隔10毫秒
+                Thread.sleep(10);
             }
-
             return lockSpin(key, seconds);
         } catch (Exception e) {
-            log.error("redis 分布式等待锁-加锁异常，异常信息：", e);
-            throw new CacheStarterException("命令执行异常！");
+            log.error("redis 分布式等待锁-加锁异常，key:" + key + "，异常信息：", e);
+            throw new CacheStarterException("redis 分布式等待锁-加锁异常，key:" + key);
         } finally {
             if (jedis != null){
                 jedis.close();
@@ -530,7 +523,7 @@ public class JedisSentinelServiceImpl implements RedisService {
 
     @Override
     public <T> T easyLock(String key, int seconds, Supplier<T> supplier){
-        // 此任务正在执行，跳过
+        // 尝试加锁
         boolean lock = this.lock(key,seconds);
         if(!lock){
             log.error("[starter][cache][easyLock]加锁错误!key:" + key);
@@ -546,7 +539,7 @@ public class JedisSentinelServiceImpl implements RedisService {
 
     @Override
     public <T> T easySpinLock(String key, int seconds, Supplier<T> supplier){
-        // 此任务正在执行，跳过
+        // 尝试加锁
         boolean lock = this.lockSpin(key,seconds);
         if(!lock){
             log.error("[starter][cache][easySpinLock]加锁错误!key:" + key);
