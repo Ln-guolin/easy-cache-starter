@@ -484,6 +484,32 @@ public class JedisSentinelServiceImpl implements RedisService {
     }
 
     @Override
+    public Transaction multi(){
+        return doCommand(jedis -> jedis.multi());
+    }
+
+    @Override
+    public void subscribe(JedisPubSub jedisPubSub,String ... channels){
+        doCommand(jedis -> {
+            jedis.subscribe(jedisPubSub,channels);
+            return null;
+        });
+    }
+
+    @Override
+    public Long publish(String channel,String message){
+        return doCommand(jedis -> jedis.publish(channel,message));
+    }
+
+    @Override
+    public void psubscribe(JedisPubSub jedisPubSub,String ... patterns){
+        doCommand(jedis -> {
+            jedis.psubscribe(jedisPubSub,patterns);
+            return null;
+        });
+    }
+
+    @Override
     public String easyCache(String key, int seconds, int nullSeconds, Supplier<String> supplier){
         // 优先读取缓存
         String res = this.get(key);

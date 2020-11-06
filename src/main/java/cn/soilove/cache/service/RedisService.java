@@ -637,6 +637,48 @@ public interface RedisService {
     Long georem(String key, String ... members);
 
     /**
+     * 标记一个事务块的开始。
+     * <pre>
+     *     事务块内的多条命令会按照先后顺序被放进一个队列当中，最后由 EXEC 命令原子性(atomic)地执行
+     *
+     *     .exec:      EXEC 命令原子性(atomic)地执行
+     *     .watch:     监视一个(或多个) key，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。
+     *     .unwatch:   取消 WATCH 命令对所有 key 的监视。
+     * </pre>
+     * @return
+     */
+    Transaction multi();
+
+    /**
+     * 订阅给定的一个或多个频道的信息
+     * @param jedisPubSub
+     * @param channels
+     */
+    void subscribe(JedisPubSub jedisPubSub,String ... channels);
+
+    /**
+     * 将信息 message 发送到指定的频道 channel
+     * @param channel
+     * @param message
+     * @return
+     */
+    Long publish(String channel,String message);
+
+    /**
+     * 订阅一个或多个符合给定模式的频道
+     * <pre>
+     *     每个模式以 * 作为匹配符，
+     *     比如
+     *       it* 匹配所有以 it 开头的频道( it.news 、 it.blog 、 it.tweets 等等)，
+     *       news.* 匹配所有以 news. 开头的频道( news.it 、 news.global.today 等等)，
+     *       诸如此类
+     * </pre>
+     * @param jedisPubSub
+     * @param patterns
+     */
+    void psubscribe(JedisPubSub jedisPubSub,String ... patterns);
+
+    /**
      * 简易-缓存
      * @param key
      * @param seconds
