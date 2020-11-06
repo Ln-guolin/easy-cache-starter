@@ -390,7 +390,7 @@ public class JedisSingleServiceImpl implements RedisService {
     public boolean unLock(String key) {
         key = LOCK_KEY_PREFIX + key;
         String finalKey = key;
-        return doCommand(jedis -> del(finalKey) > 0);
+        return del(finalKey) > 0;
     }
 
     @Override
