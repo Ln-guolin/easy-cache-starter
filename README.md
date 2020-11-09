@@ -253,6 +253,49 @@ public void orderPay(){
 }
 ```
 
+- redis 发布订阅
+```java
+// 订阅和消费消息
+@Slf4j
+@Component
+public class RedisOrderPayMessageListener {
+
+    @Autowired
+    private RedisService redisService;
+
+    @PostConstruct
+    private void init(){
+        ThreadPoolUtils.execute(() -> receiveMessage());
+    }
+
+    public void receiveMessage() {
+        JedisPubSub jedisPubSub = new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                log.info("[message][订单支付成功]onMessage... channel:"+channel+",message:" + message);
+                doit(message);
+            }
+
+            @Override
+            public void onPMessage(String pattern, String channel, String message) {
+                log.info("[message][订单支付成功]onPMessage... channel:"+channel+",message:" + message);
+                doit(message);
+            }
+        };
+
+        log.info("[message][subscribe]订阅消息渠道：order_node");
+        redisService.subscribe(jedisPubSub,"order_node");
+    }
+
+    private void doit(String message){
+        // 处理实际业务逻辑...
+    }
+}
+
+// 发送消息
+redisService.publish("order_node",orderCode);
+```
+
 
 - redis 简易缓存
 
