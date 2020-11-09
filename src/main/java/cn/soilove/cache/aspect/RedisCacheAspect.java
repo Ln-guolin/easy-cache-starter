@@ -12,7 +12,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.function.Supplier;
 
 /**
  * redis缓存切面
@@ -92,9 +91,12 @@ public class RedisCacheAspect extends SpELAspectHandler {
         // 获取表达式内容
         String key = parseSpel(method, args,annotation.key(),String.class,null);
 
+        // 业务代码执行
+        Object obj = joinPoint.proceed();
+
         // 清理缓存
         redisService.del(key);
 
-        return joinPoint.proceed();
+        return obj;
     }
 }

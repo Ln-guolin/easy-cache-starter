@@ -65,15 +65,26 @@ public class LocalCacheAspect extends SpELAspectHandler {
 
         // 清空缓存空间
         if (StringUtils.isEmpty(annotation.key())){
+            // 业务代码执行
+            Object obj = joinPoint.proceed();
+
+            // 移除缓存
             CaffeineCacheUtils.del(annotation.namespace());
+
+            return obj;
         }
         // 清空缓存空间的指定缓存key
         else {
             // 获取表达式内容
             String key = parseSpel(method, args,annotation.key(),String.class,null);
-            CaffeineCacheUtils.del(annotation.namespace(),key);
-        }
 
-        return joinPoint.proceed();
+            // 业务代码执行
+            Object obj = joinPoint.proceed();
+
+            // 移除缓存
+            CaffeineCacheUtils.del(annotation.namespace(),key);
+
+            return obj;
+        }
     }
 }
