@@ -24,7 +24,7 @@ public class CaffeineCacheUtils {
     /**
      * 本地缓存最大数量
      */
-    private static final long LOCAL_CAFFEINE_MAXIMUM_SIZE = 100_0000;
+    private static final long LOCAL_CAFFEINE_MAXIMUM_SIZE = 1000_0000;
 
     /**
      * 固定时间缓存 - 1分钟
