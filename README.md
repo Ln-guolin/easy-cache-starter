@@ -142,7 +142,9 @@ Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可�
 工具类：CaffeineCacheUtils
 ```java
 // 本地缓存
-String str = CaffeineCacheUtils.getFixed("key",() -> {return "query";});
+String str = CaffeineCacheUtils.get("namespace","key",60,() -> {
+                        return "任何内容或对象";
+                    });
 
 // 其他类似...
 
