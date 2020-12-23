@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.soilove</groupId>
-    <artifactId>spring-boot-starter-cache</artifactId>
-    <version>1.4.7</version>
-    <name>spring-boot-starter-cache</name>
-    <description>Redis and Caffeine cache Spring Boot starter</description>
+    <artifactId>easy-cache-starter</artifactId>
+    <version>1.4.9</version>
+    <name>easy-cache-starter</name>
+    <description>Redis and caffeine cache spring boot starter</description>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -176,7 +176,7 @@
 
     <!--scm信息-->
     <scm>
-        <url>http://git.soilove.cn/root/spring-boot-starter-cache</url>
+        <url>https://github.com/Ln-guolin/easy-cache-starter</url>
     </scm>
 
     <!--licenses信息 -->

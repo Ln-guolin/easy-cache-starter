@@ -1,11 +1,11 @@
 <p align="center">
-	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache"><img src="https://soilove.oss-cn-hangzhou.aliyuncs.com/32e/pro-mall/easy-cache-starter.png" width="350px"></a>
+	<a href="https://github.com/Ln-guolin/easy-cache-starter"><img src="https://soilove.oss-cn-hangzhou.aliyuncs.com/32e/pro-mall/easy-cache-starter.png" width="350px"></a>
 </p>
 <p align="center">
 	<strong>一个整合了Redis缓存和Caffeine本地缓存的SpringBoot Starter</strong>
 </p>
 <p align="center">
-	<a target="_blank" href="https://github.com/Ln-guolin/spring-boot-starter-cache/blob/master/LICENSE">
+	<a target="_blank" href="https://github.com/Ln-guolin/easy-cache-starter/blob/master/LICENSE">
 		<img src="https://img.shields.io/:license-Apache2.0-blue.svg" />
 	</a>
 	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
@@ -14,24 +14,24 @@
 	<a target="_blank" href="https://gitter.im/pro-32e/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
 		<img src="https://badges.gitter.im/pro-32e/community.svg" />
 	</a>
-	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
-        <img src="https://img.shields.io/github/repo-size/Ln-guolin/spring-boot-starter-cache"/>
+	<a href="https://github.com/Ln-guolin/easy-cache-starter">
+        <img src="https://img.shields.io/github/repo-size/Ln-guolin/easy-cache-starter"/>
     </a>
-	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
-        <img src="https://img.shields.io/github/issues-raw/Ln-guolin/spring-boot-starter-cache"/>
+	<a href="https://github.com/Ln-guolin/easy-cache-starter">
+        <img src="https://img.shields.io/github/issues-raw/Ln-guolin/easy-cache-starter"/>
     </a>
-    <a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
-        <img src="https://img.shields.io/github/v/release/Ln-guolin/spring-boot-starter-cache?include_prereleases"/>
+    <a href="https://github.com/Ln-guolin/easy-cache-starter">
+        <img src="https://img.shields.io/github/v/release/Ln-guolin/easy-cache-starter?include_prereleases"/>
     </a>
-	<a href="https://github.com/Ln-guolin/spring-boot-starter-cache">
-        <img src="https://img.shields.io/github/stars/Ln-guolin/spring-boot-starter-cache?style=social"/>
+	<a href="https://github.com/Ln-guolin/easy-cache-starter">
+        <img src="https://img.shields.io/github/stars/Ln-guolin/easy-cache-starter?style=social"/>
     </a>
 </p>
 
 
 <p align="center">
     在此鸣谢Jetbrains
-	<a target="_blank" href="https://www.jetbrains.com/?from=spring-boot-starter-cache">
+	<a target="_blank" href="https://www.jetbrains.com/?from=easy-cache-starter">
 		<img src="https://soilove.oss-cn-hangzhou.aliyuncs.com/32e/jetbrains/jetbrains.svg" height="30"/>
 	</a>
 	为本项目提供免费正版工具支持!
@@ -73,11 +73,11 @@
 
 ##  项目结构
 ```lua
-spring-boot-starter-cache
+easy-cache-starter
 ├── LICENSE
 ├── README.md
 ├── pom.xml
-├── spring-boot-starter-cache.iml
+├── easy-cache-starter.iml
 └── src
     └── main
         ├── java
@@ -131,8 +131,8 @@ Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可�
 <!-- 缓存组件 -->
 <dependency>
     <groupId>cn.soilove</groupId>
-    <artifactId>spring-boot-starter-cache</artifactId>
-    <version>${last.version}</version>
+    <artifactId>easy-cache-starter</artifactId>
+    <version>1.4.9</version>
 </dependency>
 ```
 
