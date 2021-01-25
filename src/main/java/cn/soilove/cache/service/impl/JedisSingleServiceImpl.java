@@ -326,10 +326,14 @@ public class JedisSingleServiceImpl implements RedisService {
     }
 
     @Override
+    public String ltrim(String key,long start, long end) {
+        return doCommand(jedis -> key == null ? null : jedis.ltrim(key,start,end));
+    }
+
+    @Override
     public String rpop(String key) {
         return doCommand(jedis -> key == null ? null : jedis.rpop(key));
     }
-
 
     @Override
     public List<String> blpop(String key, int seconds) {

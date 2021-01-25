@@ -132,7 +132,7 @@ Maven方式引入：直接在工程pom.xml文件中添加如下依赖，即可�
 <dependency>
     <groupId>cn.soilove</groupId>
     <artifactId>easy-cache-starter</artifactId>
-    <version>1.4.9</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 

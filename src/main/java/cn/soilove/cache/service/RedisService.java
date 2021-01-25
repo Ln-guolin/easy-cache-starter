@@ -415,6 +415,15 @@ public interface RedisService {
     String lpop(String key);
 
     /**
+     * 修剪(限制)列表元素
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    String ltrim(String key,long start, long end);
+
+    /**
      * 弹出列表尾部元素
      * @param key
      * @return

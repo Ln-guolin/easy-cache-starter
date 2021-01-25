@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.soilove</groupId>
     <artifactId>easy-cache-starter</artifactId>
-    <version>1.4.9</version>
+    <version>1.5.0</version>
     <name>easy-cache-starter</name>
     <description>Redis and caffeine cache spring boot starter</description>
 
