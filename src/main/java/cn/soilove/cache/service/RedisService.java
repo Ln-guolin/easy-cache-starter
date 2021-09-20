@@ -457,9 +457,10 @@ public interface RedisService {
      * 分布式自旋锁
      * @param key
      * @param seconds 持有锁超时秒数
+     * @param waitSeconds 申请锁超时时间秒数
      * @return
      */
-    boolean lockSpin(String key, int seconds);
+    boolean lockSpin(String key, int seconds, int waitSeconds);
 
 
     /**
@@ -739,7 +740,7 @@ public interface RedisService {
      * @param <T>
      * @return
      */
-    <T> T easySpinLock(String key, int seconds, Supplier<T> supplier);
+    <T> T easySpinLock(String key, int seconds, int applytimeout, Supplier<T> supplier);
 
     /**
      * 简易-幂等控制

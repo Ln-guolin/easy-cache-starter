@@ -30,6 +30,12 @@ public @interface EasyLock {
     int timeout() default 60;
 
     /**
+     * 申请锁等待时间 - 单位:秒
+     * @return
+     */
+    int applytimeout() default 60;
+
+    /**
      * 是否自旋 - 默认非自旋
      * @return
      */

@@ -358,11 +358,11 @@ public class JedisClusterServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean lockSpin(String key, int seconds) {
+    public boolean lockSpin(String key,int seconds, int applytimeout) {
         try {
             key = LOCK_KEY_PREFIX + key;
             long startTime = System.currentTimeMillis();
-            long waitInMilliSeconds = ((long) seconds) * 1000;
+            long waitInMilliSeconds = ((long) applytimeout) * 1000;
             // 不断轮询锁，直到超时
             while (System.currentTimeMillis() - startTime < waitInMilliSeconds) {
                 // 判断锁是否能加锁，成功设置表示加锁成功，利用set nx效果，如果存在相同值则返回失败的特性
@@ -373,7 +373,7 @@ public class JedisClusterServiceImpl implements RedisService {
                 // 轮训间隔10毫秒
                 Thread.sleep(10);
             }
-            return lockSpin(key, seconds);
+            return false;
         } catch (Exception e) {
             log.error("redis 分布式等待锁-加锁异常，key:" + key + "，异常信息：", e);
             throw new CacheStarterException("redis 分布式等待锁-加锁异常，key:" + key);
@@ -560,9 +560,9 @@ public class JedisClusterServiceImpl implements RedisService {
     }
 
     @Override
-    public <T> T easySpinLock(String key, int seconds, Supplier<T> supplier){
+    public <T> T easySpinLock(String key, int seconds,int applytimeout, Supplier<T> supplier){
         // 尝试加锁
-        boolean lock = this.lockSpin(key,seconds);
+        boolean lock = this.lockSpin(key,seconds,applytimeout);
         if(!lock){
             log.error("[starter][cache][easySpinLock]加锁错误!key:" + key);
             throw new CacheStarterException(CacheStarterCode.LOCK_ERROR);

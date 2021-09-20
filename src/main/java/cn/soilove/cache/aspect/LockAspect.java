@@ -38,7 +38,7 @@ public class LockAspect extends SpELAspectHandler {
 
         // 自旋
         if(annotation.spin()){
-            return redisService.easySpinLock(key, annotation.timeout(), () -> {
+            return redisService.easySpinLock(key, annotation.timeout(), annotation.applytimeout(), () -> {
                 try {
                     return joinPoint.proceed();
                 } catch (Throwable throwable) {
